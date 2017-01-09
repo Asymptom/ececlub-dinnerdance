@@ -1,0 +1,70 @@
+var app = angular.module('myApp', ['ngRoute', 'ngAnimate', 'toaster']);
+
+app.config(['$routeProvider',
+  function ($routeProvider) {
+        $routeProvider.
+        when('/login', {
+            title: 'Login',
+            templateUrl: 'partials/login.html',
+            controller: 'authCtrl'
+        })
+        .when('/logout', {
+            title: 'Logout',
+            templateUrl: 'partials/login.html',
+            controller: 'logoutCtrl'
+        })
+        .when('/signup', {
+            title: 'Signup',
+            templateUrl: 'partials/signup.html',
+            controller: 'authCtrl'
+        })
+        .when('/dashboard', {
+            title: 'Dashboard',
+            templateUrl: 'partials/dashboard.html',
+            controller: 'profileCtrl'
+        })
+        .when('/passwordChange', {
+            title: 'Password Change',
+            templateUrl: 'partials/password.html',
+            controller: 'passwordCtrl'
+        })
+        .when('/passwordReset', {
+            title: 'Password Reset',
+            templateUrl: 'partials/reset.html',
+            controller: 'passwordCtrl'
+        })
+        .when('/passwordReset/:resetLink', {
+            title: 'Password Reset',
+            templateUrl: 'partials/reset.html',
+            controller: 'passwordCtrl'
+        })
+        .when('/activate', {
+            title: 'Password Change',
+            templateUrl: 'partials/password.html',
+            controller: 'passwordCtrl'
+        })
+        .when('/', {
+            title: 'Login',
+            templateUrl: 'partials/login.html',
+            controller: 'authCtrl',
+            role: '0'
+        })
+        .otherwise({
+            redirectTo: '/login'
+        });
+  }])
+    .run(function ($rootScope, $location, Data, AUTH_EVENTS) {
+        $rootScope.$on("$routeChangeStart", function (event, next, current) {
+            Data.get('session').then(function (results) {
+                if (results.id) {
+                    $rootScope.id = results.id;
+                    $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+                } else {
+                    var nextUrl = next.$$route.originalPath;
+                    if (nextUrl != '/signup' && nextUrl != '/login' && nextUrl.indexOf('/passwordReset') != 0) {
+                        $location.path("/login");
+                    }
+                }
+            });
+        });
+    });

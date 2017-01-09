@@ -1,0 +1,48 @@
+<?php
+
+class session {
+
+    public static function getSession(){
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+
+        $sess = array();
+        
+        if(isset($_SESSION['id']))
+        {
+            $sess["id"] = $_SESSION['id'];
+        }
+        else
+        {
+            $sess["id"] = '';
+        }
+        return $sess;
+    }
+
+    public static function destroySession(){
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+
+        if(isSet($_SESSION['id']))
+        {
+            unset($_SESSION['id']);
+            
+            $info='info';
+            if(isSet($_COOKIE[$info]))
+            {
+                setcookie ($info, '', time() - $cookie_time);
+            }
+            $msg="Logged Out Successfully...";
+        }
+        else
+        {
+            $msg = "Not logged in...";
+        }
+        return $msg;
+    }
+ 
+}
+
+?>
