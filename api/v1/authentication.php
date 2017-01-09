@@ -96,6 +96,17 @@ $app->post('/signUp', function(Request $request, Response $response) {
     $lastName = $r->user->lastName;
     $year = date("Y");
     $displayName = trim($firstName) . " " . trim($lastName);
+    $ticketType = $r->user->ticketType;
+    if ($ticketType == "early bird"){
+        $earlyBird = true;
+        $drinking = true;
+    } else if ($ticketType == "drinking"){
+        $earlyBird = false;
+        $drinking = true;
+    } else {
+        $earlyBird = false;
+        $drinking = false;
+    }
 
     $sql = "select 1 from users where ticket_num=? AND dinnerdance_year=? LIMIT 1";
     $stmt = $this->db->prepare($sql);
@@ -113,9 +124,9 @@ $app->post('/signUp', function(Request $request, Response $response) {
         //TODO: send mail
         $this->logger->addInfo($ticketNum . ", " . $password);
         $password_hash = password::hash($password);
-        $sql = "INSERT INTO users (ticket_num, dinnerdance_year, email, first_name, last_name, display_name, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO users (ticket_num, dinnerdance_year, email, first_name, last_name, display_name, password, is_drinking_ticket, is_early_bird) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("iisssss", $ticketNum, $year, $email, $firstName, $lastName, $displayName, $password_hash);
+        $stmt->bind_param("iisssssii", $ticketNum, $year, $email, $firstName, $lastName, $displayName, $password_hash, $drinking, $earlyBird);
         if ($stmt->execute()) {
             $json["status"] = "success";
             $json["message"] = "User account created successfully";

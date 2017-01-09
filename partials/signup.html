@@ -27,6 +27,25 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="col-sm-5 control-label no-padding-right" for="name">Ticket Type</label>
+                                <div class="col-sm-7">
+                                    <span class="block input-icon input-icon-right">
+                                        <span>
+                                            <input type="radio" ng-model="signup.ticketType" value="early bird">
+                                            Early Bird
+                                        </span>
+                                        <span>
+                                            <input type="radio" ng-model="signup.ticketType" value="drinking">
+                                            Drinking
+                                        </span>
+                                        <span>
+                                            <input type="radio" ng-model="signup.ticketType" value="non-drinking">
+                                            Non-Drinking
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="col-sm-5 control-label no-padding-right" for="email">Email</label>
                                 <div class="col-sm-7">
                                     <span class="block input-icon input-icon-right">
@@ -47,7 +66,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-5 control-label no-padding-right" for="name">First Name</label>
+                                <label class="col-sm-5 control-label no-padding-right" for="firstName">First Name</label>
                                 <div class="col-sm-7">
                                     <span class="block input-icon input-icon-right">
                                         <input type="text" class="form-control" placeholder="First Name" ng-model="signup.firstName" />
@@ -55,7 +74,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-5 control-label no-padding-right" for="name">Last Name</label>
+                                <label class="col-sm-5 control-label no-padding-right" for="lastName">Last Name</label>
                                 <div class="col-sm-7">
                                     <span class="block input-icon input-icon-right">
                                         <input type="text" class="form-control" placeholder="Last Name" ng-model="signup.lastName" />
