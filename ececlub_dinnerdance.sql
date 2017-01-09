@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 09, 2017 at 03:33 AM
+-- Generation Time: Jan 09, 2017 at 10:51 PM
 -- Server version: 10.1.19-MariaDB
 -- PHP Version: 5.6.28
 
@@ -19,6 +19,18 @@ SET time_zone = "+00:00";
 --
 -- Database: `ececlub_dinnerdance`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tables`
+--
+
+CREATE TABLE `tables` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `size` tinyint(4) NOT NULL DEFAULT '10',
+  `num_members` tinyint(4) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -54,12 +66,10 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `users`
+-- Indexes for table `tables`
 --
-
---
--- Indexes for dumped tables
---
+ALTER TABLE `tables`
+  ADD UNIQUE KEY `id` (`id`);
 
 --
 -- Indexes for table `users`
@@ -67,7 +77,21 @@ CREATE TABLE `users` (
 ALTER TABLE `users`
   ADD UNIQUE KEY `uq_dd_users` (`ticket_num`,`dinnerdance_year`),
   ADD UNIQUE KEY `id` (`id`);
-  
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `tables`
+--
+ALTER TABLE `tables`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

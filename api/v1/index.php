@@ -36,5 +36,7 @@ require_once 'profile.php';
 
 require_once 'password.php';
 
+require_once 'tables.php';
+
 $app->run();
 ?>
