@@ -12,10 +12,12 @@ class session {
         if(isset($_SESSION['id']))
         {
             $sess["id"] = $_SESSION['id'];
+            $sess["is_admin"] = $_SESSION['is_admin'];
         }
         else
         {
             $sess["id"] = '';
+            $sess["is_admin"] = '';
         }
         return $sess;
     }

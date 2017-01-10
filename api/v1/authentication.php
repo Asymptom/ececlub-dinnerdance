@@ -33,6 +33,7 @@ $app->get('/session', function(Request $request, Response $response) {
 
     $json = array(
                 'id' => $session['id'],
+                'isAdmin' => $session['is_admin']
             );
     return $response->withJson($json);
 });
@@ -83,6 +84,10 @@ $app->post('/login', function(Request $request, Response $response) {
 });
 
 $app->post('/signUp', function(Request $request, Response $response) {
+    $not_authorized = checkLogin($request, $response, true);
+    if (!is_null($not_authorized)){
+        return $not_authorized;
+    }
 
     //TODO: check if session is admin session
     $r = json_decode($request->getBody());

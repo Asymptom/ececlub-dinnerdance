@@ -67,6 +67,7 @@
   <script src="app/data.js"></script>
   <script src="app/directives.js"></script>
   <script src="app/authCtrl.js"></script>
+  <script src="app/signupCtrl.js"></script>
   <script src="app/profileCtrl.js"></script>
   <script src="app/passwordCtrl.js"></script>
   <script src="app/tableCtrl.js"></script>

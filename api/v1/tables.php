@@ -32,7 +32,8 @@ $app->get('/tables', function(Request $request, Response $response) {
             }
             array_push($tables, $table);
         } else {
-            array_push($table['users'], $row['display_name']);
+            $temp = &$tables[key($tables)];
+            array_push($temp['users'], $row['display_name']);
         }
     }
     $stmt->close();
