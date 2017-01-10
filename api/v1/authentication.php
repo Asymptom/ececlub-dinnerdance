@@ -8,7 +8,6 @@ function checkLogin(Request $request, Response $response, $for_admins){
         session_start();
     }
 
-    $responseCode = 401;
     $id = $request->getAttribute('id');
     if (!isset($_SESSION) || !isset($_SESSION['id'])) { //check if they are logged in
         $json['status'] = "error";
@@ -20,7 +19,7 @@ function checkLogin(Request $request, Response $response, $for_admins){
         $json['message'] = 'You must be an admin to access this page';
         $json['redirect'] = 'login';
         return $response->withJson($json, 403);
-    } else if (!$_SESSION['is_admin'] && ($_SESSION['id'] != $id)) { //if not an admin check to see if its their own information
+    } else if (!$_SESSION['is_admin'] && (isset($id) && $_SESSION['id'] != $id)) { //if not an admin check to see if its their own information
         $json['status'] = "error";
         $json['message'] = 'You are not authorized to view this page';
         $json['redirect'] = 'login';
@@ -44,8 +43,7 @@ $app->post('/login', function(Request $request, Response $response) {
     
     $password = $r->user->password;
     $ticketNum = $r->user->ticketNum;
-    //$ticketNum = 0;
-    //$password = "n5RK9J2uNxTf";
+
     $year = date("Y");
     $sql = "select id, password, is_admin, is_activated from users where ticket_num=? and dinnerdance_year=? LIMIT 1";
     $stmt = $this->db->prepare($sql);
@@ -117,7 +115,6 @@ $app->post('/signUp', function(Request $request, Response $response) {
     $stmt->close();
 
     $json = array();
-    $responseCode = 200;
     if(!$isUserExists){
         $password = password::generate_password();
 
@@ -133,15 +130,13 @@ $app->post('/signUp', function(Request $request, Response $response) {
         } else {
             $json["status"] = "error";
             $json["message"] = "Failed to create user. Please try again"; 
-            $responseCode = 201;
         }   
         $stmt->close();
     }else{
         $json["status"] = "error";
         $json["message"] = "A user already exists with that ticket number.";
-        $responseCode = 201;
     }
-    return $response->withJson($json, $responseCode);
+    return $response->withJson($json);
 });
 
 $app->get('/logout', function(Request $request, Response $response) {

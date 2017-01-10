@@ -43,6 +43,11 @@ app.config(['$routeProvider',
             templateUrl: 'partials/password.html',
             controller: 'passwordCtrl'
         })
+        .when('/tables', {
+            title: 'tables',
+            templateUrl: 'partials/tables.html',
+            controller: 'tableCtrl'
+        })
         .when('/', {
             title: 'Login',
             templateUrl: 'partials/login.html',
