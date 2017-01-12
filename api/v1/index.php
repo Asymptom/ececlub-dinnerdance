@@ -1,9 +1,10 @@
 <?php
+define('BASEPATH', 1);
+
+require '../../vendor/autoload.php';
 
 require_once 'utils/session_utils.php';
 require_once 'utils/password_utils.php';
-
-require '../../vendor/autoload.php';
 
 require '../config.php';
 

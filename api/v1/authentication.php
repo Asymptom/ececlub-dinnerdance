@@ -1,4 +1,5 @@
 <?php 
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
@@ -30,7 +31,7 @@ function checkLogin(Request $request, Response $response, $for_admins){
 
 $app->get('/session', function(Request $request, Response $response) {
     $session = session::getSession();
-
+    
     $json = array(
                 'id' => $session['id'],
                 'isAdmin' => $session['is_admin']
