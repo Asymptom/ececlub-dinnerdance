@@ -3,21 +3,38 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-$app->get('/table', function(Request $request, Response $response) {
+$app->get('/tables', function(Request $request, Response $response) {
     $not_authorized = checkLogin($request, $response, false);
     if (!is_null($not_authorized)){
     	return $not_authorized;
     }
 
     $year = date("Y");
-    $sql = "select table_num, display_name from users where year=? and table_num is not null order by table_num";
+    $sql = "SELECT tables.id, users.display_name FROM tables LEFT JOIN users ON tables.id = users.table_num AND users.dinnerdance_year=? order by tables.id";
     $stmt = $this->db->prepare($sql);
     $stmt->bind_param('i', $year);
     $stmt->execute();
     $result = $stmt->get_result();
     $tables = array();
+    $currentTableId = null;
+    $prevTableId = null;
+    $table = null;
     while($row = $result->fetch_assoc()) {
-        array_push($tables, $row);
+        $prevTableId = $currentTableId;
+         $currentTableId = $row['id'];
+         if ($currentTableId != $prevTableId){
+             $table = array(
+                 "id" => $row['id'],
+                 "users" => array()
+             );
+             if (isset($row['display_name'])){
+                 array_push($table['users'], $row['display_name']);    
+             }
+             array_push($tables, $table);
+         } else {
+             $temp = &$tables[key($tables)];
+             array_push($temp['users'], $row['display_name']);
+         }
     }
     $stmt->close();
 
