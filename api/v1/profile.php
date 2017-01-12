@@ -3,6 +3,18 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
+function getYearOptions(){
+    $year_in_hundereds = (int)date("Y"); // (int)2017
+    $result = array();
+
+    for( $i = 0; $i<5; $i++) {
+        $year_of_grad = (string)(($i + $year_in_hundereds -1)%100);
+        $year_of_grad = substr($year_of_grad, 0, 1).'T'.substr($year_of_grad, 1, 1);
+        array_push($result, $year_of_grad);
+    }
+    return $result;
+}
+
 $app->get('/profile/{id}', function(Request $request, Response $response) {
     $not_authorized = checkLogin($request, $response, false);
     if (!is_null($not_authorized)){
@@ -38,6 +50,7 @@ $app->get('/profile/{id}', function(Request $request, Response $response) {
         $profile['returnBus'] = $user['bus_return'];
 
         $json['user'] = $profile;
+        $json['yearOptions'] = getYearOptions();
     } else {
         $json['status'] = "error";
         $json['message'] = 'No such user is registered';
@@ -77,6 +90,7 @@ $app->put('/profile/{id}', function(Request $request, Response $response) {
     if ($stmt->execute()){
     	$json["status"] = "success";
         $json["message"] = "Profile successfully updated";
+
     } else {
     	$json["status"] = "error";
         $json["message"] = "Failed to update profile"; 

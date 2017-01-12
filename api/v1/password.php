@@ -165,7 +165,7 @@ $app->put('/password/{id}', function(Request $request, Response $response) {
                 $json["redirect"] = "dashboard";
             } else {
                 $json["status"] = "error";
-                $json["message"] = "Failed to update password"; 
+                $json["message"] = "Failed to update password";
             }   
         $stmt->close();   
         } else {
@@ -175,6 +175,7 @@ $app->put('/password/{id}', function(Request $request, Response $response) {
     }else{
         $json["status"] = "error";
         $json["message"] = "We could not verify you at this time";
+        $responseCode = 201;
     }
     return $response->withJson($json);
 });

@@ -35,13 +35,7 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" rel="home" title="ECE Club Dinnerdance" ng-href="#">ECE Club Dinnerdance</a>
-            <div class="navbar-header col-md-2">
-              <a class="navbar-brand" rel="home" title="Dashboard" ng-if="id" ng-href="#dashboard">Dashboard</a>
-            </div>
-            <div class="navbar-header col-md-2">
-              <a class="navbar-brand" rel="home" title="Tables" ng-if="id" ng-href="#tables">Tables</a>
-            </div>
+            <a class="navbar-brand" rel="home" title="ECE Club Dinnerdance" ng-href="#dashboard">ECE Club Dinnerdance</a>
             <div class="navbar-header col-md-2">
               <a class="navbar-brand" rel="home" title="logout" ng-if="id" ng-controller="authCtrl" ng-click="logout();">Logout</a>
             </div>
@@ -67,8 +61,6 @@
   <script src="app/data.js"></script>
   <script src="app/directives.js"></script>
   <script src="app/authCtrl.js"></script>
-  <script src="app/signupCtrl.js"></script>
   <script src="app/profileCtrl.js"></script>
   <script src="app/passwordCtrl.js"></script>
-  <script src="app/tableCtrl.js"></script>
 </html>
