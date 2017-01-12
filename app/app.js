@@ -16,7 +16,7 @@ app.config(['$routeProvider',
         .when('/signup', {
             title: 'Signup',
             templateUrl: 'partials/signup.html',
-            controller: 'authCtrl'
+            controller: 'signupCtrl'
         })
         .when('/dashboard', {
             title: 'Dashboard',
@@ -43,6 +43,11 @@ app.config(['$routeProvider',
             templateUrl: 'partials/password.html',
             controller: 'passwordCtrl'
         })
+        .when('/tables', {
+            title: 'tables',
+            templateUrl: 'partials/tables.html',
+            controller: 'tableCtrl'
+        })
         .when('/', {
             title: 'Login',
             templateUrl: 'partials/login.html',
@@ -58,10 +63,11 @@ app.config(['$routeProvider',
             Data.get('session').then(function (results) {
                 if (results.id) {
                     $rootScope.id = results.id;
+                    $rootScope.isAdmin = results.isAdmin;
                     $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                 } else {
                     var nextUrl = next.$$route.originalPath;
-                    if (nextUrl != '/signup' && nextUrl != '/login' && nextUrl.indexOf('/passwordReset') != 0) {
+                    if (nextUrl != '/login' && nextUrl.indexOf('/passwordReset') != 0) {
                         $location.path("/login");
                     }
                 }

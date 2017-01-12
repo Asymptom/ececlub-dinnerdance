@@ -84,22 +84,19 @@ $app->put('/profile/{id}', function(Request $request, Response $response) {
     $returnBus = $r->user->returnBus;
 
     $json = array();
-    $responseCode = 200;
     $sql = "UPDATE users SET email=?, first_name=?, last_name=?, display_name=?, year=?, food=?, drinking_age=?, allergies=?, bus_depart=?, bus_return=?  WHERE id=?";
     $stmt = $this->db->prepare($sql);
     $stmt->bind_param("ssssssisiii", $email, $firstName, $lastName, $displayName, $year, $food, $drinkingAge, $allergies, $departBus, $returnBus, $id);
     if ($stmt->execute()){
     	$json["status"] = "success";
         $json["message"] = "Profile successfully updated";
-
     } else {
     	$json["status"] = "error";
         $json["message"] = "Failed to update profile"; 
-        $responseCode = 201;
     }
 
     $stmt->close();
-    return $response->withJson($json, $responseCode);
+    return $response->withJson($json);
 
 });
 
