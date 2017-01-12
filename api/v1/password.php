@@ -24,6 +24,7 @@ $app->get('/password/reset/{resetLink}', function(Request $request, Response $re
     }
 
     $json = array();
+    $responseCode = 200;
 
     $resetLink = $request->getAttribute('resetLink');
 
@@ -31,6 +32,7 @@ $app->get('/password/reset/{resetLink}', function(Request $request, Response $re
         $json["status"] = "error";
         $json["message"] = "This link is invalid. Woo";
         $json["redirect"] = "login";
+        $responseCode = 201;
     } else {
         $sql = "select id, ticket_num, reset_time from users where reset_link=? LIMIT 1";
         $stmt = $this->db->prepare($sql);
@@ -58,6 +60,7 @@ $app->get('/password/reset/{resetLink}', function(Request $request, Response $re
                     $json["status"] = "error";
                     $json["message"] = "We could not reset your password at this time";
                     $json["redirect"] = "login";
+                    $responseCode = 201;
                 }
                 $stmt->close();
 
@@ -72,14 +75,16 @@ $app->get('/password/reset/{resetLink}', function(Request $request, Response $re
                 $json["status"] = "error";
                 $json["message"] = "This link has expired";
                 $json["redirect"] = "login";
+                $responseCode = 201;
             }
         }else{
             $json["status"] = "error";
             $json["message"] = "This link is invalid";
             $json["redirect"] = "login";
+            $responseCode = 201;
         }
     }
-    return $response->withJson($json);
+    return $response->withJson($json, $responseCode);
 });
 
 $app->post('/password/reset', function(Request $request, Response $response) {
@@ -103,6 +108,7 @@ $app->post('/password/reset', function(Request $request, Response $response) {
     $stmt->close();
 
     $json = array();
+    $responseCode = 200;
     if($user['id']){
         $resetLink = password::generate_password(40) . $user['id'];
         $date = new DateTime();
@@ -122,13 +128,15 @@ $app->post('/password/reset', function(Request $request, Response $response) {
         } else {
             $json["status"] = "error";
             $json["message"] = "We could not reset your password at this time";
+            $responseCode = 201;
         }
         $stmt->close();
     }else{
         $json["status"] = "error";
         $json["message"] = "We don't have a user registered under those credentials";
+        $responseCode = 201;
     }
-    return $response->withJson($json);
+    return $response->withJson($json, $responseCode);
 });
 
 $app->put('/password/{id}', function(Request $request, Response $response) {
@@ -153,6 +161,7 @@ $app->put('/password/{id}', function(Request $request, Response $response) {
     $stmt->close();
 
     $json = array();
+    $responseCode = 200;
     if($user){
         if(password::check_password($user['password'],$currentPass)){
             $password_hash = password::hash($newPass);
@@ -166,6 +175,7 @@ $app->put('/password/{id}', function(Request $request, Response $response) {
             } else {
                 $json["status"] = "error";
                 $json["message"] = "Failed to update password"; 
+                $responseCode = 201;
             }   
         $stmt->close();   
         } else {
@@ -175,8 +185,9 @@ $app->put('/password/{id}', function(Request $request, Response $response) {
     }else{
         $json["status"] = "error";
         $json["message"] = "We could not verify you at this time";
+        $responseCode = 201;
     }
-    return $response->withJson($json);
+    return $response->withJson($json, $responseCode);
 });
 
 ?>
