@@ -3,8 +3,10 @@ define('BASEPATH', 1);
 
 require '../../vendor/autoload.php';
 
-require_once 'utils/session_utils.php';
-require_once 'utils/password_utils.php';
+require_once 'utils/sessionUtils.php';
+require_once 'utils/passwordUtils.php';
+require_once 'utils/requestUtils.php';
+require_once 'utils/mailUtils.php';
 
 require '../config.php';
 
@@ -29,6 +31,12 @@ $container['db'] = function ($c) {
     }
 
     return $conn;
+};
+
+$container['mandrill'] = function ($c) {
+    $config = $c['settings']['mandrill'];
+    $client = new Mandrill($config['apiKey']);
+    return $client;
 };
 
 require_once 'authentication.php';

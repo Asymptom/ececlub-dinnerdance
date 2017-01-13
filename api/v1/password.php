@@ -45,8 +45,8 @@ $app->get('/password/reset/{resetLink}', function(Request $request, Response $re
             $date = new DateTime();
             $reset_expire_time = DateTime::createFromFormat('Y-m-d H:i:s', $user['reset_time']);
             if ($date < $reset_expire_time) {
-                $password = password::generate_password();
-                $password_hash = password::hash($password);
+                $password = passwordUtils::generatePassword();
+                $password_hash = passwordUtils::hash($password);
                 $this->logger->addInfo("ticket_num=" . $user['ticket_num'] . ", password=" . $password);
                 //TODO: send mail
                 $sql = "UPDATE users SET password=? ,reset_link=null, reset_time=null, is_activated=0 where id=? LIMIT 1";
@@ -105,7 +105,7 @@ $app->post('/password/reset', function(Request $request, Response $response) {
 
     $json = array();
     if($user['id']){
-        $resetLink = password::generate_password(40) . $user['id'];
+        $resetLink = passwordUtils::generatePassword(40) . $user['id'];
         $date = new DateTime();
         $date->add(new DateInterval('PT1H'));
         $resetTime = $date->format('Y-m-d H:i:s');
@@ -155,8 +155,8 @@ $app->put('/password/{id}', function(Request $request, Response $response) {
 
     $json = array();
     if($user){
-        if(password::check_password($user['password'],$currentPass)){
-            $password_hash = password::hash($newPass);
+        if(passwordUtils::checkPassword($user['password'],$currentPass)){
+            $password_hash = passwordUtils::hash($newPass);
             $sql = "UPDATE users SET password=?, is_activated=1 WHERE id=?";
             $stmt = $this->db->prepare($sql);
             $stmt->bind_param("si", $password_hash, $id);

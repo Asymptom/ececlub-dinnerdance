@@ -3,7 +3,7 @@ app.controller('tableCtrl', function ($scope, $rootScope, $routeParams, $locatio
         Data.get('tables').then(function (results) {
             Data.toast(results);
             $scope.tables = results.tables;
-            console.log($scope.tables);
+            $scope.tableId = results.tableId;
         });
     });
 

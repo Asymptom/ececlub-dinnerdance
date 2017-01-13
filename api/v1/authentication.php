@@ -30,8 +30,8 @@ function checkLogin(Request $request, Response $response, $for_admins){
 }
 
 $app->get('/session', function(Request $request, Response $response) {
-    $session = session::getSession();
-    
+    $session = sessionUtils::getSession();
+
     $json = array(
                 'id' => $session['id'],
                 'isAdmin' => $session['is_admin']
@@ -56,7 +56,7 @@ $app->post('/login', function(Request $request, Response $response) {
 
     $json = array();
     if ($user != NULL) {
-        if(password::check_password($user['password'],$password)){
+        if(passwordUtils::checkPassword($user['password'],$password)){
             if (!isset($_SESSION)) {
                 session_start();
             }
@@ -122,22 +122,28 @@ $app->post('/signUp', function(Request $request, Response $response) {
 
     $json = array();
     if(!$isUserExists){
-        $password = password::generate_password();
+        $password = passwordUtils::generatePassword();
 
-        //TODO: send mail
-        $this->logger->addInfo($ticketNum . ", " . $password);
-        $password_hash = password::hash($password);
-        $sql = "INSERT INTO users (ticket_num, dinnerdance_year, email, first_name, last_name, display_name, password, is_drinking_ticket, is_early_bird) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("iisssssii", $ticketNum, $year, $email, $firstName, $lastName, $displayName, $password_hash, $drinking, $earlyBird);
-        if ($stmt->execute()) {
-            $json["status"] = "success";
-            $json["message"] = "User account created successfully";
+        $mail = new mailUtils($this);
+        $results = $mail->sendAccountCreationEmail(requestUtils::getAppHome($request), $email, $displayName, $ticketNum, $password);
+        if ($mail->checkEmailResults("Account Creation", $results)){
+            $this->logger->addInfo($ticketNum . ", " . $password);
+            $password_hash = passwordUtils::hash($password);
+            $sql = "INSERT INTO users (ticket_num, dinnerdance_year, email, first_name, last_name, display_name, password, is_drinking_ticket, is_early_bird) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bind_param("iisssssii", $ticketNum, $year, $email, $firstName, $lastName, $displayName, $password_hash, $drinking, $earlyBird);
+            if ($stmt->execute()) {
+                $json["status"] = "success";
+                $json["message"] = "User account created successfully";
+            } else {
+                $json["status"] = "error";
+                $json["message"] = "Failed to create user. Please try again"; 
+            }   
+            $stmt->close();
         } else {
             $json["status"] = "error";
-            $json["message"] = "Failed to create user. Please try again"; 
-        }   
-        $stmt->close();
+            $json["message"] = "Sorry we couldn't send you an email at this time! Please try signing up later.";    
+        }
     }else{
         $json["status"] = "error";
         $json["message"] = "A user already exists with that ticket number.";
@@ -146,7 +152,7 @@ $app->post('/signUp', function(Request $request, Response $response) {
 });
 
 $app->get('/logout', function(Request $request, Response $response) {
-    $session = session::destroySession();
+    $session = sessionUtils::destroySession();
     $json = array(
                 "status" => "info",
                 "message" => "Logged out successfully"

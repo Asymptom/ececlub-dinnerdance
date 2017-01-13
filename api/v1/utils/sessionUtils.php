@@ -1,6 +1,6 @@
 <?php
 
-class session {
+class sessionUtils {
 
     public static function getSession(){
         if (!isset($_SESSION)) {

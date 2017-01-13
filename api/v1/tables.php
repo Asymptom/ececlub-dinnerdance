@@ -10,6 +10,15 @@ $app->get('/tables', function(Request $request, Response $response) {
     	return $not_authorized;
     }
 
+    $id = $_SESSION['id'];
+    $sql = "SELECT table_num FROM users WHERE id=?";
+    $stmt = $this->db->prepare($sql);
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+    $tableNum = $user['table_num'];
+
     $year = date("Y");
     $sql = "SELECT tables.id, users.display_name FROM tables LEFT JOIN users ON tables.id = users.table_num AND users.dinnerdance_year=? order by tables.id";
     $stmt = $this->db->prepare($sql);
@@ -43,6 +52,7 @@ $app->get('/tables', function(Request $request, Response $response) {
     $json["status"] = "success";
     $json["message"] = "Tables successfully retrieved";
     $json["tables"] = $tables;
+    $json["tableId"] = $tableNum;
     return $response->withJson($json);
 });
 
