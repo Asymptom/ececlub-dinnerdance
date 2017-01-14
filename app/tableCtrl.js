@@ -14,6 +14,7 @@ app.controller('tableCtrl', function ($scope, $rootScope, $routeParams, $locatio
             Data.toast(results);
             Data.get('tables').then(function (results) {
                 $scope.tables = results.tables;
+                $scope.tableId = results.tableId;
             });
         });
     };
@@ -23,6 +24,7 @@ app.controller('tableCtrl', function ($scope, $rootScope, $routeParams, $locatio
             Data.toast(results);
             Data.get('tables').then(function (results) {
                 $scope.tables = results.tables;
+                $scope.tableId = results.tableId;
             });
         });
     };
