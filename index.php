@@ -23,33 +23,36 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-
   <body ng-cloak="">
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
-        <div class="row">
-          <div class="navbar-header col-md-8">
-            <button type="button" class="navbar-toggle" toggle="collapse" target=".navbar-ex1-collapse">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" rel="home" title="ECE Club Dinnerdance" ng-href="#">ECE Club Dinnerdance</a>
-            <div class="navbar-header col-md-2">
-              <a class="navbar-brand" rel="home" title="Dashboard" ng-if="id" ng-href="#dashboard">Dashboard</a>
-            </div>
-            <div class="navbar-header col-md-2">
-              <a class="navbar-brand" rel="home" title="Tables" ng-if="id" ng-href="#tables">Tables</a>
-            </div>
-            <div class="navbar-header col-md-2">
-              <a class="navbar-brand" rel="home" title="logout" ng-if="id" ng-controller="authCtrl" ng-click="logout();">Logout</a>
-            </div>
-          </div>
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#banner">ECEvil</a>
         </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul ng-if="!id" class="nav navbar-nav">
+            <li><a ng-href="#about">Venue</a></li>
+            <li><a ng-href="#menu">Menu</a></li>
+            <li><a ng-href="#tickets">Tickets</a></li>
+          </ul>
+          <ul ng-if="id" class="nav navbar-nav">
+            <li ng-if="isAdmin" class="active"><a ng-href="#signup">Sign Up</a></li>
+            <li><a ng-href="#dashboard">Profile</a></li>
+            <li><a ng-href="#tables">Tables</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li ng-if="!id"><a ng-href="#/login">Login</a></li>
+            <li ng-if="id"><a ng-controller="authCtrl" ng-click="logout();">Logout</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
       </div>
-    </div>
-    <div >
+    </nav>
       <div class="container" style="margin-top:20px;">
 
         <div data-ng-view="" id="ng-view" class="slide-animation"></div>
@@ -58,6 +61,8 @@
     </body>
   <toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
   <!-- Libs -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
   <script src="js/angular.min.js"></script>
   <script src="js/angular-route.min.js"></script>
   <script src="js/angular-animate.min.js" ></script>
