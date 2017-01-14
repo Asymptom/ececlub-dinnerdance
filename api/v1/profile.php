@@ -10,37 +10,46 @@ $app->get('/profile/{id}', function(Request $request, Response $response) {
     	return $not_authorized;
     }
 
+    $json = array();
+    
     $sql = "SELECT id, ticket_num, email, first_name, last_name, display_name, is_admin, is_activated, year, food, table_num, drinking_age, allergies, bus_depart, bus_return FROM users WHERE id=? LIMIT 1";
     $stmt = $this->db->prepare($sql);
     $stmt->bindParam(1, $_SESSION['id']);
-    $stmt->execute();
-    $user = $stmt->fetch();
+    if ($stmt->execute()){
+        $user = $stmt->fetch();
+        if ($user != NULL) {
+            if ($user['is_activated']){
+                $json['status'] = "success";
+                $json['message'] = 'Retrieved profile successfully.';
+                $json['redirect'] = 'dashboard';
 
-    $json = array();
-    //TODO: reroute if is_activated is false
-    if ($user != NULL) {
-        $json['status'] = "success";
-        $json['message'] = 'Retrieved profile successfully.';
-        $json['redirect'] = 'dashboard';
+                $profile = array();
+                $profile['ticketNum'] = $user['ticket_num'];
+                $profile['email'] = $user['email'];
+                $profile['firstName'] = $user['first_name'];
+                $profile['lastName'] = $user['last_name'];
+                $profile['displayName'] = $user['display_name']; 
+                $profile['year'] = $user['year'];
+                $profile['food'] = $user['food'];
+                $profile['tableNum'] = $user['table_num'];
+                $profile['drinkingAge'] = $user['drinking_age'];
+                $profile['allergies'] = $user['allergies'];
+                $profile['departBus'] = $user['bus_depart'];
+                $profile['returnBus'] = $user['bus_return'];
 
-        $profile = array();
-        $profile['ticketNum'] = $user['ticket_num'];
-        $profile['email'] = $user['email'];
-        $profile['firstName'] = $user['first_name'];
-        $profile['lastName'] = $user['last_name'];
-        $profile['displayName'] = $user['display_name']; 
-        $profile['year'] = $user['year'];
-        $profile['food'] = $user['food'];
-        $profile['tableNum'] = $user['table_num'];
-        $profile['drinkingAge'] = $user['drinking_age'];
-        $profile['allergies'] = $user['allergies'];
-        $profile['departBus'] = $user['bus_depart'];
-        $profile['returnBus'] = $user['bus_return'];
-
-        $json['user'] = $profile;
+                $json['user'] = $profile;
+            } else {
+                $json['status'] = "success";
+                $json['message'] = 'Please activate your account first';
+                $json['redirect'] = 'activate';
+            }
+        } else {
+            $json['status'] = "error";
+            $json['message'] = 'No such user is registered';
+        }
     } else {
         $json['status'] = "error";
-        $json['message'] = 'No such user is registered';
+        $json['message'] = 'Failed database query';
     }
 
     return $response->withJson($json);
@@ -69,7 +78,7 @@ $app->put('/profile/{id}', function(Request $request, Response $response) {
     $returnBus = $r->user->returnBus;
 
     $json = array();
-    $sql = "UPDATE users SET email=?, first_name=?, last_name=?, display_name=?, year=?, food=?, drinking_age=?, allergies=?, bus_depart=?, bus_return=?  WHERE id=?";
+    $sql = "UPDATE users SET email=?, first_name=?, last_name=?, display_name=?, year=?, food=?, drinking_age=?, allergies=?, bus_depart=?, bus_return=?  WHERE id=? AND is_activated=1";
     $stmt = $this->db->prepare($sql);
     $stmt->bindParam(1, $email);
     $stmt->bindParam(2, $firstName);

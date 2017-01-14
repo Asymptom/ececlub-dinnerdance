@@ -11,45 +11,56 @@ $app->get('/tables', function(Request $request, Response $response) {
     }
 
     $id = $_SESSION['id'];
+
+    $json = array();
+
     $sql = "SELECT table_num FROM users WHERE id=?";
     $stmt = $this->db->prepare($sql);
     $stmt->bindParam(1, $id);
-    $stmt->execute();
-    $user = $stmt->fetch();
-    $tableNum = $user['table_num'];
+    if ($stmt->execute()){
+        $user = $stmt->fetch();
+        $tableNum = $user['table_num'];
 
-    $year = date("Y");
-    $sql = "SELECT tables.id, users.display_name FROM tables LEFT JOIN users ON tables.id = users.table_num AND users.dinnerdance_year=? order by tables.id";
-    $stmt = $this->db->prepare($sql);
-    $stmt->bindParam(1, $year);
-    $stmt->execute();
-    $tables = array();
-    $currentTableId = null;
-    $prevTableId = null;
-    $table = null;
-    while($row = $stmt->fetch()) {
-        $prevTableId = $currentTableId;
-        $currentTableId = $row['id'];
-        if ($currentTableId != $prevTableId){
-            $table = array(
-                "id" => $row['id'],
-                "users" => array()
-            );
-            if (isset($row['display_name'])){
-                array_push($table['users'], $row['display_name']);    
+        $year = date("Y");
+        $sql = "SELECT tables.id, users.display_name FROM tables LEFT JOIN users ON tables.id = users.table_num AND users.dinnerdance_year=? order by tables.id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(1, $year);
+        if ($stmt->execute()){
+            $tables = array();
+            $currentTableId = null;
+            $prevTableId = null;
+            $table = null;
+            while($row = $stmt->fetch()) {
+                $prevTableId = $currentTableId;
+                $currentTableId = $row['id'];
+                if ($currentTableId != $prevTableId){
+                    $table = array(
+                        "id" => $row['id'],
+                        "users" => array()
+                    );
+                    if (isset($row['display_name'])){
+                        array_push($table['users'], $row['display_name']);    
+                    }
+                    array_push($tables, $table);
+                } else {
+                    $temp = &$tables[key($tables)];
+                    array_push($temp['users'], $row['display_name']);
+                }
             }
-            array_push($tables, $table);
-        } else {
-            $temp = &$tables[key($tables)];
-            array_push($temp['users'], $row['display_name']);
-        }
-    }
 
-    $json = array();
-    $json["status"] = "success";
-    $json["message"] = "Tables successfully retrieved";
-    $json["tables"] = $tables;
-    $json["tableId"] = $tableNum;
+            $json["status"] = "success";
+            $json["message"] = "Tables successfully retrieved";
+            $json["tables"] = $tables;
+            $json["tableId"] = $tableNum;
+        } else {
+            $json['status'] = "error";
+            $json['message'] = 'Failed database query';    
+        }
+    } else {
+        $json['status'] = "error";
+        $json['message'] = 'Failed database query';
+    }
+    
     return $response->withJson($json);
 });
 
@@ -60,20 +71,25 @@ $app->get('/tables/{tableId}', function(Request $request, Response $response) {
     }
 
     $tableId = $request->getAttribute('tableId');
+    
+    $json = array();
+    
     $sql = "select id, size, num_members from tables where id=? LIMIT 1";
     $stmt = $this->db->prepare($sql);
     $stmt->bindParam(1, $tableId);
-    $stmt->execute();
-    $table = $stmt->fetch();
-
-    $json = array();
-    if ($table){
-        $json["status"] = "success";
-        $json["message"] = "Successfully retrieved table";
-        $json["table"] = $table;
+    if ($stmt->execute()){
+        $table = $stmt->fetch();
+        if ($table){
+            $json["status"] = "success";
+            $json["message"] = "Successfully retrieved table";
+            $json["table"] = $table;
+        } else {
+            $json["status"] = "error";
+            $json["message"] = "The requested table does not exist";
+        }
     } else {
-        $json["status"] = "error";
-        $json["message"] = "The requested table does not exist";
+        $json['status'] = "error";
+        $json['message'] = 'Failed database query';
     }
     
     return $response->withJson($json);

@@ -46,39 +46,42 @@ $app->post('/login', function(Request $request, Response $response) {
     $password = $r->user->password;
     $ticketNum = $r->user->ticketNum;
 
+    $json = array();
     $year = date("Y");
     $sql = "SELECT id, password, is_admin, is_activated FROM users WHERE ticket_num=? AND dinnerdance_year=? LIMIT 1";
     $stmt = $this->db->prepare($sql);
     $stmt->bindParam(1, $ticketNum);
     $stmt->bindParam(2, $year);
-    $stmt->execute();
-    $user = $stmt->fetch();
+    if ($stmt->execute()){
+        $user = $stmt->fetch();
+        if ($user != NULL) {
+            if(passwordUtils::checkPassword($user['password'],$password)){
+                if (!isset($_SESSION)) {
+                    session_start();
+                }
+                $_SESSION['id'] = $user['id'];
+                $_SESSION['is_admin'] = $user['is_admin'];
 
-    $json = array();
-    if ($user != NULL) {
-        if(passwordUtils::checkPassword($user['password'],$password)){
-            if (!isset($_SESSION)) {
-                session_start();
-            }
-            $_SESSION['id'] = $user['id'];
-            $_SESSION['is_admin'] = $user['is_admin'];
-
-            if(!$user['is_activated']){
-                $json['status'] = "success";
-                $json['message'] = 'Logged in successfully. Please set a new password';
-                $json['redirect'] = 'activate';
+                if(!$user['is_activated']){
+                    $json['status'] = "success";
+                    $json['message'] = 'Logged in successfully. Please set a new password';
+                    $json['redirect'] = 'activate';
+                } else {
+                    $json['status'] = "success";
+                    $json['message'] = 'Logged in successfully.';
+                    $json['redirect'] = 'dashboard';
+                }
             } else {
-                $json['status'] = "success";
-                $json['message'] = 'Logged in successfully.';
-                $json['redirect'] = 'dashboard';
+                $json['status'] = "error";
+                $json['message'] = 'Login failed. Incorrect credentials';
             }
         } else {
             $json['status'] = "error";
-            $json['message'] = 'Login failed. Incorrect credentials';
+            $json['message'] = 'No such user is registered';
         }
     } else {
         $json['status'] = "error";
-        $json['message'] = 'No such user is registered';
+        $json['message'] = 'Login failed. We could not log you in at this time.';
     }
 
     return $response->withJson($json);
@@ -90,7 +93,6 @@ $app->post('/signUp', function(Request $request, Response $response) {
         return $not_authorized;
     }
 
-    //TODO: check if session is admin session
     $r = json_decode($request->getBody());
 
     //TODO: serverside verification of request
@@ -112,48 +114,53 @@ $app->post('/signUp', function(Request $request, Response $response) {
         $drinking = false;
     }
 
+    $json = array();
+    
     $sql = "SELECT 1 FROM users WHERE ticket_num=? AND dinnerdance_year=? LIMIT 1";
     $stmt = $this->db->prepare($sql);
     $stmt->bindParam(1, $ticketNum);
     $stmt->bindParam(2, $year);
-    $stmt->execute();
-    $isUserExists = $stmt->fetch();
+    if ($stmt->execute()){
+        $isUserExists = $stmt->fetch();
+        if(!$isUserExists){
+            $password = passwordUtils::generatePassword();
 
-    $json = array();
-    if(!$isUserExists){
-        $password = passwordUtils::generatePassword();
-
-        $mail = new mailUtils($this);
-        $results = $mail->sendAccountCreationEmail(requestUtils::getAppHome($request), $email, $displayName, $ticketNum, $password);
-        if ($mail->checkEmailResults("Account Creation", $results)){
-            $this->logger->addInfo("Account Creation", array("ticket_num" => $ticketNum , "password" => $password));
-            $password_hash = passwordUtils::hash($password);
-            $sql = "INSERT INTO users (ticket_num, dinnerdance_year, email, first_name, last_name, display_name, password, is_drinking_ticket, is_early_bird) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(1, $ticketNum);
-            $stmt->bindParam(2, $year);
-            $stmt->bindParam(3, $email);
-            $stmt->bindParam(4, $firstName);
-            $stmt->bindParam(5, $lastName);
-            $stmt->bindParam(6, $displayName);
-            $stmt->bindParam(7, $password_hash);
-            $stmt->bindParam(8, $drinking);
-            $stmt->bindParam(9, $earlyBird);
-            if ($stmt->execute()) {
-                $json["status"] = "success";
-                $json["message"] = "User account created successfully";
+            $mail = new mailUtils($this);
+            $results = $mail->sendAccountCreationEmail(requestUtils::getAppHome($request), $email, $displayName, $ticketNum, $password);
+            if ($mail->checkEmailResults("Account Creation", $results)){
+                $this->logger->addInfo("Account Creation", array("ticket_num" => $ticketNum , "password" => $password));
+                $password_hash = passwordUtils::hash($password);
+                $sql = "INSERT INTO users (ticket_num, dinnerdance_year, email, first_name, last_name, display_name, password, is_drinking_ticket, is_early_bird) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $stmt = $this->db->prepare($sql);
+                $stmt->bindParam(1, $ticketNum);
+                $stmt->bindParam(2, $year);
+                $stmt->bindParam(3, $email);
+                $stmt->bindParam(4, $firstName);
+                $stmt->bindParam(5, $lastName);
+                $stmt->bindParam(6, $displayName);
+                $stmt->bindParam(7, $password_hash);
+                $stmt->bindParam(8, $drinking);
+                $stmt->bindParam(9, $earlyBird);
+                if ($stmt->execute()) {
+                    $json["status"] = "success";
+                    $json["message"] = "User account created successfully";
+                } else {
+                    $json["status"] = "error";
+                    $json["message"] = "Failed to create user. Please try again"; 
+                }
             } else {
                 $json["status"] = "error";
-                $json["message"] = "Failed to create user. Please try again"; 
+                $json["message"] = "Sorry we couldn't send you an email at this time! Please try signing up later.";    
             }
-        } else {
+        }else{
             $json["status"] = "error";
-            $json["message"] = "Sorry we couldn't send you an email at this time! Please try signing up later.";    
+            $json["message"] = "A user already exists with that ticket number.";
         }
-    }else{
+    } else {
         $json["status"] = "error";
-        $json["message"] = "A user already exists with that ticket number.";
+        $json["message"] = "Failed to database query";
     }
+
     return $response->withJson($json);
 });
 
