@@ -24,10 +24,10 @@
                         <li ng-repeat="user in table.users">
                             {{user}}
                         </li>
-                        <button class="width-35 btn btn-sm btn-primary" ng-if="tableId!=table.id" ng-click="tableUpdate(table.id)">
+                        <button class="width-35 btn btn-sm btn-primary" ng-click="tableUpdate(table.id)">
                             Join
                         </button>
-                        <button class="width-35 btn btn-sm btn-primary" ng-if="tableId==table.id" ng-click="removeFromTables()">
+                        <button class="width-35 btn btn-sm btn-primary" ng-click="removeFromTables()">
                             Leave
                         </button>
                     </ul>

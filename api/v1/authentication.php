@@ -47,12 +47,12 @@ $app->post('/login', function(Request $request, Response $response) {
     $ticketNum = $r->user->ticketNum;
 
     $year = date("Y");
-    $sql = "select id, password, is_admin, is_activated from users where ticket_num=? and dinnerdance_year=? LIMIT 1";
+    $sql = "SELECT id, password, is_admin, is_activated FROM users WHERE ticket_num=? AND dinnerdance_year=? LIMIT 1";
     $stmt = $this->db->prepare($sql);
-    $stmt->bind_param('ii', $ticketNum, $year);
+    $stmt->bindParam(1, $ticketNum);
+    $stmt->bindParam(2, $year);
     $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
+    $user = $stmt->fetch();
 
     $json = array();
     if ($user != NULL) {
@@ -112,13 +112,12 @@ $app->post('/signUp', function(Request $request, Response $response) {
         $drinking = false;
     }
 
-    $sql = "select 1 from users where ticket_num=? AND dinnerdance_year=? LIMIT 1";
+    $sql = "SELECT 1 FROM users WHERE ticket_num=? AND dinnerdance_year=? LIMIT 1";
     $stmt = $this->db->prepare($sql);
-    $stmt->bind_param("ii", $ticketNum, $year);
+    $stmt->bindParam(1, $ticketNum);
+    $stmt->bindParam(2, $year);
     $stmt->execute();
-    $result = $stmt->get_result();
-    $isUserExists = $result->fetch_assoc();
-    $stmt->close();
+    $isUserExists = $stmt->fetch();
 
     $json = array();
     if(!$isUserExists){
@@ -127,19 +126,26 @@ $app->post('/signUp', function(Request $request, Response $response) {
         $mail = new mailUtils($this);
         $results = $mail->sendAccountCreationEmail(requestUtils::getAppHome($request), $email, $displayName, $ticketNum, $password);
         if ($mail->checkEmailResults("Account Creation", $results)){
-            $this->logger->addInfo($ticketNum . ", " . $password);
+            $this->logger->addInfo("Account Creation", array("ticket_num" => $ticketNum , "password" => $password));
             $password_hash = passwordUtils::hash($password);
             $sql = "INSERT INTO users (ticket_num, dinnerdance_year, email, first_name, last_name, display_name, password, is_drinking_ticket, is_early_bird) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $this->db->prepare($sql);
-            $stmt->bind_param("iisssssii", $ticketNum, $year, $email, $firstName, $lastName, $displayName, $password_hash, $drinking, $earlyBird);
+            $stmt->bindParam(1, $ticketNum);
+            $stmt->bindParam(2, $year);
+            $stmt->bindParam(3, $email);
+            $stmt->bindParam(4, $firstName);
+            $stmt->bindParam(5, $lastName);
+            $stmt->bindParam(6, $displayName);
+            $stmt->bindParam(7, $password_hash);
+            $stmt->bindParam(8, $drinking);
+            $stmt->bindParam(9, $earlyBird);
             if ($stmt->execute()) {
                 $json["status"] = "success";
                 $json["message"] = "User account created successfully";
             } else {
                 $json["status"] = "error";
                 $json["message"] = "Failed to create user. Please try again"; 
-            }   
-            $stmt->close();
+            }
         } else {
             $json["status"] = "error";
             $json["message"] = "Sorry we couldn't send you an email at this time! Please try signing up later.";    

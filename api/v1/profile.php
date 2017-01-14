@@ -10,12 +10,11 @@ $app->get('/profile/{id}', function(Request $request, Response $response) {
     	return $not_authorized;
     }
 
-    $sql = "select id,ticket_num, email, first_name, last_name, display_name, is_admin, is_activated, year, food, table_num, drinking_age, allergies, bus_depart, bus_return from users where id=? LIMIT 1";
+    $sql = "SELECT id, ticket_num, email, first_name, last_name, display_name, is_admin, is_activated, year, food, table_num, drinking_age, allergies, bus_depart, bus_return FROM users WHERE id=? LIMIT 1";
     $stmt = $this->db->prepare($sql);
-    $stmt->bind_param('i', $_SESSION['id']);
+    $stmt->bindParam(1, $_SESSION['id']);
     $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
+    $user = $stmt->fetch();
 
     $json = array();
     //TODO: reroute if is_activated is false
@@ -44,9 +43,7 @@ $app->get('/profile/{id}', function(Request $request, Response $response) {
         $json['message'] = 'No such user is registered';
     }
 
-    $stmt->close();
     return $response->withJson($json);
-
 });
 
 $app->put('/profile/{id}', function(Request $request, Response $response) {
@@ -74,7 +71,17 @@ $app->put('/profile/{id}', function(Request $request, Response $response) {
     $json = array();
     $sql = "UPDATE users SET email=?, first_name=?, last_name=?, display_name=?, year=?, food=?, drinking_age=?, allergies=?, bus_depart=?, bus_return=?  WHERE id=?";
     $stmt = $this->db->prepare($sql);
-    $stmt->bind_param("ssssssisiii", $email, $firstName, $lastName, $displayName, $year, $food, $drinkingAge, $allergies, $departBus, $returnBus, $id);
+    $stmt->bindParam(1, $email);
+    $stmt->bindParam(2, $firstName);
+    $stmt->bindParam(3, $lastName);
+    $stmt->bindParam(4, $displayName);
+    $stmt->bindParam(5, $year);
+    $stmt->bindParam(6, $food);
+    $stmt->bindParam(7, $drinkingAge);
+    $stmt->bindParam(8, $allergies);
+    $stmt->bindParam(9, $departBus);
+    $stmt->bindParam(10, $returnBus);
+    $stmt->bindParam(11, $id);
     if ($stmt->execute()){
     	$json["status"] = "success";
         $json["message"] = "Profile successfully updated";
@@ -83,7 +90,6 @@ $app->put('/profile/{id}', function(Request $request, Response $response) {
         $json["message"] = "Failed to update profile"; 
     }
 
-    $stmt->close();
     return $response->withJson($json);
 
 });

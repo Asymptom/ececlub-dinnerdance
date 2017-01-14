@@ -23,14 +23,16 @@ $container['logger'] = function($c) {
 
 $container['db'] = function ($c) {
     $db = $c['settings']['db'];
-    $conn = new mysqli($db['host'], $db['user'], $db['pass'], $db['dbname'] );
-
-    // Check for database connection error
-    if (mysqli_connect_errno()) {
-        echo "Failed to connect to MySQL: " . mysqli_connect_error();
+    try{
+        $pdo = new PDO("mysql:host=" . $db['host'] . ";dbname=" . $db['dbname'],
+            $db['user'], $db['pass']);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        print "Error!: " . $e->getMessage() . "<br/>";
+        die();
     }
-
-    return $conn;
+    return $pdo;
 };
 
 $container['mandrill'] = function ($c) {
