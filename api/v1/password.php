@@ -1,4 +1,5 @@
 <?php
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
@@ -26,56 +27,56 @@ $app->get('/password/reset/{resetLink}', function(Request $request, Response $re
     $json = array();
 
     $resetLink = $request->getAttribute('resetLink');
-
     if ($resetLink == null) {
         $json["status"] = "error";
         $json["message"] = "This link is invalid. Woo";
         $json["redirect"] = "login";
     } else {
-        $sql = "select id, ticket_num, reset_time from users where reset_link=? LIMIT 1";
+        $sql = "SELECT id, ticket_num, reset_time FROM users WHERE reset_link=? LIMIT 1";
         $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("s", $resetLink);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $user = $result->fetch_assoc();
-        $stmt->close();
+        $stmt->bindParam(1, $resetLink);
+        if ($stmt->execute()){
+            $user = $stmt->fetch();
+            if($user){
+                $date = new DateTime();
+                $reset_expire_time = DateTime::createFromFormat('Y-m-d H:i:s', $user['reset_time']);
+                if ($date < $reset_expire_time) {
+                    $password = passwordUtils::generatePassword();
+                    $password_hash = passwordUtils::hash($password);
+                    $this->logger->addInfo("Account Reset", array("ticket_num" => $user['ticket_num'] , "password" => $password));
+                    //TODO: send mail
+                    $sql = "UPDATE users SET password=? ,reset_link=null, reset_time=null, is_activated=0 where id=? LIMIT 1";
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->bindParam(1, $password_hash);
+                    $stmt->bindParam(2, $user['id']);
+                    if ($stmt->execute()){    
+                        $json["status"] = "success";
+                        $json["message"] = "We have reset your password. Please check your email for the details.";
+                    } else {
+                        $json["status"] = "error";
+                        $json["message"] = "We could not reset your password at this time";
+                        $json["redirect"] = "login";
+                    }
 
-        if($user){
-            $date = new DateTime();
-            $reset_expire_time = DateTime::createFromFormat('Y-m-d H:i:s', $user['reset_time']);
-            if ($date < $reset_expire_time) {
-                $password = password::generate_password();
-                $password_hash = password::hash($password);
-                $this->logger->addInfo("ticket_num=" . $user['ticket_num'] . ", password=" . $password);
-                //TODO: send mail
-                $sql = "UPDATE users SET password=? ,reset_link=null, reset_time=null, is_activated=0 where id=? LIMIT 1";
-                $stmt = $this->db->prepare($sql);
-                $stmt->bind_param("si", $password_hash, $user['id']);
-                if ($stmt->execute()){    
-                    $json["status"] = "success";
-                    $json["message"] = "We have reset your password. Please check your email for the details.";
                 } else {
+                    //destroy the reset_link and reset_time
+                    $sql = "UPDATE users SET reset_link=null, reset_time=null where id=? LIMIT 1";
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->bindParam(1, $user['id']);
+                    $stmt->execute();
+
                     $json["status"] = "error";
-                    $json["message"] = "We could not reset your password at this time";
+                    $json["message"] = "This link has expired";
                     $json["redirect"] = "login";
                 }
-                $stmt->close();
-
             } else {
-                //destroy the reset_link and reset_time
-                $sql = "UPDATE users SET reset_link=null, reset_time=null where id=? LIMIT 1";
-                $stmt = $this->db->prepare($sql);
-                $stmt->bind_param("i", $user['id']);
-                $stmt->execute();
-                $stmt->close();
-
                 $json["status"] = "error";
-                $json["message"] = "This link has expired";
+                $json["message"] = "This link is invalid";
                 $json["redirect"] = "login";
             }
-        }else{
+        } else {
             $json["status"] = "error";
-            $json["message"] = "This link is invalid";
+            $json["message"] = "Failed database query";
             $json["redirect"] = "login";
         }
     }
@@ -94,41 +95,45 @@ $app->post('/password/reset', function(Request $request, Response $response) {
     $email = $r->user->email;
     $dinnerdance_year = date("Y");
 
-    $sql = "select id from users where ticket_num=? and email=? and dinnerdance_year=? LIMIT 1";
-    $stmt = $this->db->prepare($sql);
-    $stmt->bind_param("isi", $ticketNum, $email, $dinnerdance_year);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
-    $stmt->close();
-
     $json = array();
-    if($user['id']){
-        $resetLink = password::generate_password(40) . $user['id'];
-        $date = new DateTime();
-        $date->add(new DateInterval('PT1H'));
-        $resetTime = $date->format('Y-m-d H:i:s');
 
-        $this->logger->addInfo("id=" . $user['id'] . ", reset_link=" . $resetTime);
+    $sql = "SELECT id FROM users WHERE ticket_num=? AND email=? AND dinnerdance_year=? LIMIT 1";
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindParam(1, $ticketNum);
+    $stmt->bindParam(2, $email);
+    $stmt->bindParam(3, $dinnerdance_year);
+    if ($stmt->execute()){
+        $user = $stmt->fetch();
+        if($user['id']){
+            $resetLink = passwordUtils::generatePassword(256) . $user['id'];
+            $date = new DateTime();
+            $date->add(new DateInterval('PT1H'));
+            $resetTime = $date->format('Y-m-d H:i:s');
 
-        $sql = "UPDATE users SET reset_link=?, reset_time=? where id=? LIMIT 1";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("ssi", $resetLink, $resetTime, $user['id']);
-        if ($stmt->execute()){
+            $this->logger->addInfo("Account Reset Request", array("id" => $user['id'], "reset_time" => $resetTime, "reset_link" => $resetLink));
 
-            //TODO: send mail
-            $json["status"] = "success";
-            $json["message"] = "We have sent you a password reset request. Please check your email. This request will expire in an hour.";
+            $sql = "UPDATE users SET reset_link=?, reset_time=? where id=? LIMIT 1";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(1, $resetLink);
+            $stmt->bindParam(2, $resetTime);
+            $stmt->bindParam(3, $user['id']);
+            if ($stmt->execute()){
+                //TODO: send mail
+                $json["status"] = "success";
+                $json["message"] = "We have sent you a password reset request. Please check your email. This request will expire in an hour.";
+            } else {
+                $json["status"] = "error";
+                $json["message"] = "We could not reset your password at this time";
+            }
         } else {
             $json["status"] = "error";
-            $json["message"] = "We could not reset your password at this time";
+            $json["message"] = "We don't have a user registered under those credentials";
         }
-        $stmt->close();
-    }else{
+        return $response->withJson($json);
+    } else {
         $json["status"] = "error";
-        $json["message"] = "We don't have a user registered under those credentials";
+        $json["message"] = "Failed database query";
     }
-    return $response->withJson($json);
 });
 
 $app->put('/password/{id}', function(Request $request, Response $response) {
@@ -144,37 +149,39 @@ $app->put('/password/{id}', function(Request $request, Response $response) {
 
     $id = $_SESSION['id'];
 
-    $sql = "select password from users where id=? LIMIT 1";
-    $stmt = $this->db->prepare($sql);
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
-    $stmt->close();
-
     $json = array();
-    if($user){
-        if(password::check_password($user['password'],$currentPass)){
-            $password_hash = password::hash($newPass);
-            $sql = "UPDATE users SET password=?, is_activated=1 WHERE id=?";
-            $stmt = $this->db->prepare($sql);
-            $stmt->bind_param("si", $password_hash, $id);
-            if ($stmt->execute()) {
-                $json["status"] = "success";
-                $json["message"] = "Successfully updated password";
-                $json["redirect"] = "dashboard";
+
+    $sql = "SELECT password FROM users WHERE id=? LIMIT 1";
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindParam(1, $id);
+    if ($stmt->execute()){
+        $user = $stmt->fetch();
+        if($user){
+            if(passwordUtils::checkPassword($user['password'],$currentPass)){
+                $password_hash = passwordUtils::hash($newPass);
+                $sql = "UPDATE users SET password=?, is_activated=1 WHERE id=?";
+                $stmt = $this->db->prepare($sql);
+                $stmt->bindParam(1, $password_hash);
+                $stmt->bindParam(2, $id);
+                if ($stmt->execute()) {
+                    $json["status"] = "success";
+                    $json["message"] = "Successfully updated password";
+                    $json["redirect"] = "dashboard";
+                } else {
+                    $json["status"] = "error";
+                    $json["message"] = "Failed to update password"; 
+                }
             } else {
-                $json["status"] = "error";
-                $json["message"] = "Failed to update password"; 
-            }   
-        $stmt->close();   
+                $json['status'] = "error";
+                $json['message'] = 'Current password is incorrect';
+            }
         } else {
-            $json['status'] = "error";
-            $json['message'] = 'Current password is incorrect';
+            $json["status"] = "error";
+            $json["message"] = "We could not verify you at this time";
         }
-    }else{
+    } else {
         $json["status"] = "error";
-        $json["message"] = "We could not verify you at this time";
+        $json["message"] = "Failed database query";
     }
     return $response->withJson($json);
 });

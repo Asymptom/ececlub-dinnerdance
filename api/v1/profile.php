@@ -1,4 +1,5 @@
 <?php 
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
@@ -21,44 +22,49 @@ $app->get('/profile/{id}', function(Request $request, Response $response) {
     	return $not_authorized;
     }
 
-    $sql = "select id,ticket_num, email, first_name, last_name, display_name, is_admin, is_activated, year, food, table_num, drinking_age, allergies, bus_depart, bus_return from users where id=? LIMIT 1";
-    $stmt = $this->db->prepare($sql);
-    $stmt->bind_param('i', $_SESSION['id']);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
-
     $json = array();
-    //TODO: reroute if is_activated is false
-    if ($user != NULL) {
-        $json['status'] = "success";
-        $json['message'] = 'Retrieved profile successfully.';
-        $json['redirect'] = 'dashboard';
+    
+    $sql = "SELECT id, ticket_num, email, first_name, last_name, display_name, is_admin, is_activated, year, food, table_num, drinking_age, allergies, bus_depart, bus_return FROM users WHERE id=? LIMIT 1";
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindParam(1, $_SESSION['id']);
+    if ($stmt->execute()){
+        $user = $stmt->fetch();
+        if ($user != NULL) {
+            if ($user['is_activated']){
+                $json['status'] = "success";
+                $json['message'] = 'Retrieved profile successfully.';
+                $json['redirect'] = 'dashboard';
 
-        $profile = array();
-        $profile['ticketNum'] = $user['ticket_num'];
-        $profile['email'] = $user['email'];
-        $profile['firstName'] = $user['first_name'];
-        $profile['lastName'] = $user['last_name'];
-        $profile['displayName'] = $user['display_name']; 
-        $profile['year'] = $user['year'];
-        $profile['food'] = $user['food'];
-        $profile['tableNum'] = $user['table_num'];
-        $profile['drinkingAge'] = $user['drinking_age'];
-        $profile['allergies'] = $user['allergies'];
-        $profile['departBus'] = $user['bus_depart'];
-        $profile['returnBus'] = $user['bus_return'];
+                $profile = array();
+                $profile['ticketNum'] = $user['ticket_num'];
+                $profile['email'] = $user['email'];
+                $profile['firstName'] = $user['first_name'];
+                $profile['lastName'] = $user['last_name'];
+                $profile['displayName'] = $user['display_name']; 
+                $profile['year'] = $user['year'];
+                $profile['food'] = $user['food'];
+                $profile['tableNum'] = $user['table_num'];
+                $profile['drinkingAge'] = $user['drinking_age'];
+                $profile['allergies'] = $user['allergies'];
+                $profile['departBus'] = $user['bus_depart'];
+                $profile['returnBus'] = $user['bus_return'];
 
-        $json['user'] = $profile;
-        $json['yearOptions'] = getYearOptions();
+                $json['user'] = $profile;
+                $json['yearOptions'] = getYearOptions();
+            } else {
+                $json['status'] = "success";
+                $json['message'] = 'Please activate your account first';
+            }
+        } else {
+            $json['status'] = "error";
+            $json['message'] = 'No such user is registered';
+        }
     } else {
         $json['status'] = "error";
-        $json['message'] = 'No such user is registered';
+        $json['message'] = 'Failed database query';
     }
 
-    $stmt->close();
     return $response->withJson($json);
-
 });
 
 $app->put('/profile/{id}', function(Request $request, Response $response) {
@@ -84,9 +90,19 @@ $app->put('/profile/{id}', function(Request $request, Response $response) {
     $returnBus = $r->user->returnBus;
 
     $json = array();
-    $sql = "UPDATE users SET email=?, first_name=?, last_name=?, display_name=?, year=?, food=?, drinking_age=?, allergies=?, bus_depart=?, bus_return=?  WHERE id=?";
+    $sql = "UPDATE users SET email=?, first_name=?, last_name=?, display_name=?, year=?, food=?, drinking_age=?, allergies=?, bus_depart=?, bus_return=?  WHERE id=? AND is_activated=1";
     $stmt = $this->db->prepare($sql);
-    $stmt->bind_param("ssssssisiii", $email, $firstName, $lastName, $displayName, $year, $food, $drinkingAge, $allergies, $departBus, $returnBus, $id);
+    $stmt->bindParam(1, $email);
+    $stmt->bindParam(2, $firstName);
+    $stmt->bindParam(3, $lastName);
+    $stmt->bindParam(4, $displayName);
+    $stmt->bindParam(5, $year);
+    $stmt->bindParam(6, $food);
+    $stmt->bindParam(7, $drinkingAge);
+    $stmt->bindParam(8, $allergies);
+    $stmt->bindParam(9, $departBus);
+    $stmt->bindParam(10, $returnBus);
+    $stmt->bindParam(11, $id);
     if ($stmt->execute()){
     	$json["status"] = "success";
         $json["message"] = "Profile successfully updated";
@@ -95,9 +111,7 @@ $app->put('/profile/{id}', function(Request $request, Response $response) {
         $json["message"] = "Failed to update profile"; 
     }
 
-    $stmt->close();
     return $response->withJson($json);
 
 });
-
 ?>

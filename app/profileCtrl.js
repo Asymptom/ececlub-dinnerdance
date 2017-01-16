@@ -2,7 +2,8 @@ app.controller('profileCtrl', function ($scope, $rootScope, $routeParams, $locat
     $scope.$on(AUTH_EVENTS.loginSuccess, function() {
         Data.get('profile/' + $rootScope.id).then(function (results) {
             $scope.user = results.user;
-            $scope.yearOptions = results.yearOptions;
+	    $scope.yearOptions = results.yearOptions;
+            $location.path(results.redirect);
         });
     });
 

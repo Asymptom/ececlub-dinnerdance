@@ -5,6 +5,7 @@ app.factory("Data", ['$http', 'toaster',
 
         var obj = {};
         obj.toast = function (data) {
+            console.log(data);
             toaster.pop(data.status, "", data.message, 10000, 'trustedHtml');
         }
         obj.get = function (q) {
