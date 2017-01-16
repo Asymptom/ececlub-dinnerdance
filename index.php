@@ -10,6 +10,7 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
     <link href="css/toaster.css" rel="stylesheet">
+    <link href="css/landing.css" rel="stylesheet">
     <style>
       a {
       color: orange;
@@ -53,7 +54,7 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-      <div class="container" style="margin-top:20px;">
+      <div>
 
         <div data-ng-view="" id="ng-view" class="slide-animation"></div>
 
@@ -67,6 +68,7 @@
   <script src="js/angular-route.min.js"></script>
   <script src="js/angular-animate.min.js" ></script>
   <script src="js/toaster.js"></script>
+  <script src="js/carousel.js"></script>
   <script src="app/app.js"></script>
   <script src="app/constants.js"></script>
   <script src="app/data.js"></script>

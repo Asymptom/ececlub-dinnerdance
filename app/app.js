@@ -49,13 +49,13 @@ app.config(['$routeProvider',
             controller: 'tableCtrl'
         })
         .when('/', {
-            title: 'Login',
-            templateUrl: 'partials/login.html',
+            title: 'Landing',
+            templateUrl: 'partials/landing.html',
             controller: 'authCtrl',
             role: '0'
         })
         .otherwise({
-            redirectTo: '/login'
+            redirectTo: '/'
         });
   }])
     .run(function ($rootScope, $location, Data, AUTH_EVENTS) {
@@ -67,7 +67,8 @@ app.config(['$routeProvider',
                     $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                 } else {
                     var nextUrl = next.$$route.originalPath;
-                    if (nextUrl != '/login' && nextUrl.indexOf('/passwordReset') != 0) {
+                    if (nextUrl != '/' && nextUrl != '/login' && nextUrl.indexOf('/passwordReset') != 0) {
+
                         $location.path("/login");
                     }
                 }
