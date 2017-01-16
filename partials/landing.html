@@ -1,0 +1,80 @@
+<div class="no-overflow">
+    <section id="home-section" class="home-content">
+        <div id="slideshow">
+           <div>
+             <img src="images/ECEDDDarthVader.jpg" style= "width: 100%;">
+           </div>
+           <div>
+             <img src="images/eceddjoker.jpg" style= "width: 100%;">
+           </div>
+           <div>
+             <img src="images/bowser.png" style= "width: 100%;">
+           </div>
+           <div>
+             <img src="images/glaDOS.png" style= "width: 100%;">
+           </div>
+        </div>
+        <script>
+
+            $("#slideshow > div:gt(0)").hide();
+            setInterval(function() {
+              $('#slideshow > div:first')
+              .fadeOut(1000)
+              .next()
+              .fadeIn(1000)
+              .end()
+              .appendTo('#slideshow');
+            }, 3000);
+          
+        </script>
+    </section>
+    <section id="info-section" class="section-content info">
+      <div class="section-container info">
+        <h2>
+          Event Info
+        </h2>
+        <div class="content-wrapper">
+          <div class="content">
+            <div class="title">What:</div><div class="data">ECE Dinner Dance</div>
+          </div>
+          <div class="content">
+            <div class="title">Where:</div><div class="data">The Eglinton Grand<br>400 Eglinton Ave. W,<br>Toronto, Ontario </div>
+          </div>
+          <div class="content">
+            <div class="title">When:</div><div class="data">Saturday February 17, 2017 <br> 6 p.m. ~ 1 a.m.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    <section id="menu-section" class="section-content menu">
+      <div class="dine-table"></div>
+      <div class="section-container menu">
+        <a name="menu"></a>
+        <h2>
+          Menu
+        </h2>
+        <div class="content">
+          <div class="title"> CALIFORNIA SALAD </div>
+          <div class="data"> Mixed Field Greens along with Radicchio<br>Lettuce dressed in our homemade Balsamic Honey Vinaigrette</div>
+        </div>
+        <div class="content">
+          <div class="title"> SOUP</div>
+          <div class="data"> Butternut Squash Soup </div>
+          </div>
+
+        <div class="content">
+          <div class="title"> ENTREE </div>
+          <div class="subtitle"> (seasonal vegetables and additional side accompany all entree)
+          </div>
+          <div class="data"> Chicken Supreme Roasted to Perfection <br> and a 7oz. Grilled Salmon Fillet <br>
+          OR <br> House Roasted Potatos <br> & Seasonal Vegetables</div>
+        </div>
+        <div class="content">
+          <div class="title"> DESSERT </div>
+          <div class="data"> A trio consisting of
+          Tiramisu, <br> Mini Lemon Cheesecake and a Mini Chocolate Mousse </div>
+        </div>
+      </div>
+    </section>
+</div>
