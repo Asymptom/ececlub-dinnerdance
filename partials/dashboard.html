@@ -76,31 +76,21 @@
                                 </span>
                                 <div class="col-sm-7">
                                     <span class="block input-icon input-icon-right">
-                                        <select class="form-control" id="sel1">
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
+                                        <select  class="form-control" id="sel1">
+                                            <option ng-repeat="option in yearOptions">{{option}}</option>
                                         </select>
                                     </span>
                                 </div>
                                 
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-5 control-label no-padding-right" for="food">Food</label>
+                                <label class="col-sm-5 control-label no-padding-right" for="food">Dietary Restrictions</label>
                                 <div class="col-sm-7">
                                     <span class="block input-icon input-icon-right">
-                                        <!-- TODO: Change to radio buttton -->
-                                        <input type="text" class="form-control" name="food" ng-model="user.food" />
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-5 control-label no-padding-right" for="drinkingAge">Are you of legal drinking age? </label>
-                                <div class="col-sm-7">
-                                    <span class="block input-icon input-icon-right">
-                                        <!-- TODO: Change to radio buttton -->
-                                        <input type="text" class="form-control" name="drinkingAge" ng-model="user.drinkingAge" />
+                                        <select  class="form-control" id="sel1">
+                                            <option>None</option>
+                                            <option>Vegetarian/Halal</option>
+                                        </select>
                                     </span>
                                 </div>
                             </div>
@@ -114,20 +104,13 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-5 control-label no-padding-right" for="departBus">Depart Bus</label>
+                                <label class="col-sm-5 control-label no-padding-right" for="drinkingAge">Are you of legal drinking age? </label>
                                 <div class="col-sm-7">
                                     <span class="block input-icon input-icon-right">
-                                        <!-- TODO: Change to select -->
-                                        <input type="text" class="form-control" name="departBus" ng-model="user.departBus" />
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-5 control-label no-padding-right" for="returnBus">Return Bus</label>
-                                <div class="col-sm-7">
-                                    <span class="block input-icon input-icon-right">
-                                        <!-- TODO: Change to select -->
-                                        <input type="text" class="form-control" name="returnBus" ng-model="user.returnBus" />
+                                        <select  class="form-control" id="sel1">
+                                            <option>Yes</option>
+                                            <option>No </option>
+                                        </select>
                                     </span>
                                 </div>
                             </div>
