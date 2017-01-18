@@ -1,34 +1,36 @@
 <div class="no-overflow">
+  <a id="banner"></a>
     <section id="home-section" class="home-content">
-        <div id="slideshow">
+        <div class="slideshow">
            <div>
-             <img src="images/ECEDDDarthVader.jpg" style= "width: 100%;">
+             <img src="images/ECEvilBowser.jpg" style= "width: 100%">
            </div>
            <div>
-             <img src="images/eceddjoker.jpg" style= "width: 100%;">
+             <img src="images/ECEvilVader.jpg" style= "width: 100%;">
            </div>
            <div>
-             <img src="images/bowser.png" style= "width: 100%;">
+             <img src="images/ECEvilGlaDOS.jpg" style= "width: 100%;">
            </div>
            <div>
-             <img src="images/glaDOS.png" style= "width: 100%;">
+             <img src="images/ECEvilVoldemort.jpg" style= "width: 100%;">
            </div>
         </div>
+        <div class="front-title-wrapper">
+      </div>
         <script>
-
-            $("#slideshow > div:gt(0)").hide();
-            setInterval(function() {
-              $('#slideshow > div:first')
-              .fadeOut(1000)
-              .next()
-              .fadeIn(1000)
-              .end()
-              .appendTo('#slideshow');
-            }, 3000);
-          
+          $(".slideshow > div:gt(0)").hide();
+          setInterval(function() {
+            $('.slideshow > div:first')
+            .fadeOut(1000)
+            .next()
+            .fadeIn(1000)
+            .end()
+            .appendTo('.slideshow');
+          }, 5000);
         </script>
     </section>
-    <section id="info-section" class="section-content info">
+    <a id="about"></a>
+      <section id="info-section" class="section-content info">
       <div class="section-container info">
         <h2>
           Event Info
@@ -41,40 +43,64 @@
             <div class="title">Where:</div><div class="data">The Eglinton Grand<br>400 Eglinton Ave. W,<br>Toronto, Ontario </div>
           </div>
           <div class="content">
-            <div class="title">When:</div><div class="data">Saturday February 17, 2017 <br> 6 p.m. ~ 1 a.m.</div>
+            <div class="title">When:</div><div class="data">Saturday February 17, 2017 <br> 6 pm - 1 am</div>
           </div>
         </div>
-
       </div>
     </section>
+    <a id="menu"></a>
     <section id="menu-section" class="section-content menu">
-      <div class="dine-table"></div>
       <div class="section-container menu">
-        <a name="menu"></a>
         <h2>
           Menu
         </h2>
         <div class="content">
-          <div class="title"> CALIFORNIA SALAD </div>
-          <div class="data"> Mixed Field Greens along with Radicchio<br>Lettuce dressed in our homemade Balsamic Honey Vinaigrette</div>
+          <div class="title"> APPETIZER </div>
+          <div class="data"> Penne Pasta with Tomato Basil Sauce</div>
         </div>
         <div class="content">
-          <div class="title"> SOUP</div>
-          <div class="data"> Butternut Squash Soup </div>
-          </div>
-
-        <div class="content">
           <div class="title"> ENTREE </div>
-          <div class="subtitle"> (seasonal vegetables and additional side accompany all entree)
-          </div>
-          <div class="data"> Chicken Supreme Roasted to Perfection <br> and a 7oz. Grilled Salmon Fillet <br>
-          OR <br> House Roasted Potatos <br> & Seasonal Vegetables</div>
+
+          <div class="data"> Chicken Forestiere</div>
         </div>
         <div class="content">
           <div class="title"> DESSERT </div>
-          <div class="data"> A trio consisting of
-          Tiramisu, <br> Mini Lemon Cheesecake and a Mini Chocolate Mousse </div>
+          <div class="data"> Chocolate Wedge Cake </div>
         </div>
       </div>
     </section>
+    <a id="tickets"></a>
+    <section id="ticket-section" class="section-content ticket">
+      <div class="section-container ticket">
+        <h2>
+          JOIN US!
+        </h2>
+        <div class="content-wrapper">
+          <div class="content">
+            <div class="message">Ticket sales start Wednesday, January 18, 2017 </div>
+          </div>
+          <div class="content">
+            <div class="title">Where:</div><div class="data">ECE Club Office<br>SF B6400 (next to the ECE Common Room)</div>
+          </div>
+          <div class="content">
+            <div class="title">When:</div><div class="data">Monday to Friday, 10am-5pm</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+<script>
+$('a[href*="#"]:not([href="#"])').click(function() {
+  if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+    var target = $(this.hash);
+    target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+    if (target.length) {
+      $('html, body').animate({
+        scrollTop: target.offset().top
+      }, 1000);
+      return false;
+    }
+  }
+});
+</script>
 </div>

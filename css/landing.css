@@ -1,19 +1,26 @@
-#slideshow {
-  position: relative;
-  background-color: black;
-  width: 100%;
-  height: auto;
-}
-
-#slideshow > div {
+.slideshow {
   position: absolute;
   background-color: black;
+  width: 100%;
+  overflow: hidden;
+  height: 769px;
+  background-size: cover;
+}
+
+.slideshow > div {
+  position: absolute;
+  background-color: black;
+  background-size: cover;
   color: black;
   width: 100%;
   top: 1px;
   left: 1px;
   right: 1px;
   bottom: 1px;
+}
+.slideshow > div > img {
+  min-height: 769px;
+  min-width: 1000px;
 }
 
  @import url("https://fonts.googleapis.com/css?family=Playball");
@@ -42,6 +49,11 @@
      font-style: normal;
  }
  @font-face {
+     font-family: 'headline'; /*a name to be used later*/
+     src: url('../fonts/HEADTH__.TTF'); /*URL to font*/
+
+ }
+ @font-face {
      font-family: 'Felipa'; /*a name to be used later*/
      src: url('../fonts/Felipa-Regular.ttf'); /*URL to font*/
 
@@ -49,6 +61,24 @@
  @font-face {
      font-family: 'another_danger'; /*a name to be used later*/
      src: url('../fonts/another_danger.otf'); /*URL to font*/
+     font-weight: normal;
+     font-style: normal;
+ }
+ @font-face {
+     font-family: 'londonB'; /*a name to be used later*/
+     src: url('../fonts/LondonTwo.ttf'); /*URL to font*/
+     font-weight: normal;
+     font-style: normal;
+ }
+ @font-face {
+     font-family: 'londonM'; /*a name to be used later*/
+     src: url('../fonts/LondonBetween.ttf'); /*URL to font*/
+     font-weight: normal;
+     font-style: normal;
+ }
+ @font-face {
+     font-family: 'londonL'; /*a name to be used later*/
+     src: url('../fonts/LondonMM.ttf'); /*URL to font*/
      font-weight: normal;
      font-style: normal;
  }
@@ -79,14 +109,12 @@
  }
 
  h2 {
-   font-family: 'Felipa', cursive;
+   font-family: 'londonB', sans-serif;
    color: #FFFFFF;
    letter-spacing: 10px;
    font-size: 68px;
    margin-left: 20px;
  }
-
-
 
  a, a:hover, a:focus {
    text-decoration: none;
@@ -109,7 +137,7 @@
  }
 
  .section .content {
-   width: 100%;
+   width: 750px;
    text-align: center;
    display: inline-block;
  }
@@ -138,33 +166,16 @@
    filter: blur(3px);*/
  }
  .home-content .front-title-wrapper {
-   width: 890px;
-   text-align: center;
-   display: inline-block;
-   padding: 25px;
+   width: 100%;
+   padding-top: 220px;
    border-radius: 5px;
+   height: inherit;
    /* Center */
-   display: inline-block;
+   display: block;
    position: relative;
-   top: 50%;
-   -webkit-transform: translateY(-50%);
-       -ms-transform: translateY(-50%);
-           transform: translateY(-50%);
-   /* Boxing */
-   background: -webkit-linear-gradient(top, rgba(237,243,249,1) 0%, rgba(87,123,156,0.8) 100%);
-   background: linear-gradient(to bottom, rgba(237,243,249,1) 0%, rgba(87,123,156,0.8) 100%);
+
  }
 
- .home-content .front-title {
-   font-family: 'oswald_stencil', sans-serif;
-   font-size: 92px;
-   color: #3A3737;
- }
- .home-content .front-msg {
-   font-size: 20px;
-   color: #1F465D;
-   margin-bottom: 20px;
- }
  .home-content .front-button {
    padding: 5px;
    width: 200px;
@@ -195,7 +206,11 @@
    background-image: url("../images/darkwall.jpg");
    height: 600px;
  }
-
+ .section-content.ticket {
+   background-color: #11111;
+   background-image: url("../images/darkwall.jpg");
+   height: 600px;
+ }
  .section-content.menu {
    background-image: url("../images/darkForest.jpg");
    height: auto;
@@ -218,15 +233,13 @@
    width: 960px;
    height: 100%;
 
-   /* background */
-
-   /* Transition */
-
- }
- .section-content.animate .section-container.info {
-
  }
 
+ .section-content .section-container.ticket {
+   width: 960px;
+   height: 100%;
+
+ }
  .section-content .section-container.menu {
    width: 950px;
    height: 100%;
@@ -273,6 +286,7 @@
  }
  .section-content .section-container.menu .content {
    text-align: center;
+   line-height: 2;
  }
  .section-content.animate .section-container .content{
    opacity: 1;
@@ -285,7 +299,7 @@
  /* Info */
  .section-content .section-container.info .content .title {
    width: 30%;
-   font-family: 'Felipa', cursive;
+   font-family: 'londonM', cursive;
    color: #FFFFFF;
    font-size: inherit;
    display: inline-block;
@@ -295,25 +309,49 @@
    width: 70%;
    display: inline-block;
    color: #FFFFFF;
-   font-family: 'Felipa', cursive;
+   font-family: 'londonL', cursive;
+   font-size: inherit;
+ }
+/* Tickets */
+ .section-content .section-container.ticket .content .title {
+   width: 30%;
+   font-family: 'londonM', cursive;
+   color: #FFFFFF;
+   font-size: inherit;
+   display: inline-block;
+   vertical-align: top;
+ }
+ .section-content .section-container.ticket .content .data {
+   width: 70%;
+   display: inline-block;
+   color: #FFFFFF;
+   font-family: 'londonL', cursive;
+   font-size: inherit;
+ }
+ .section-content .section-container.ticket .content .message {
+   width: 100%;
+   text-align: center;
+   display: inline-block;
+   color: #FFFFFF;
+   font-family: 'londonL', cursive;
    font-size: inherit;
  }
  /* Menu */
  .section-content .section-container.menu .title {
    width: 100%;
-   font-family: 'Felipa', cursive;
+   font-family: 'londonM', cursive;
    color: #FFF;
    font-size: 38px;
  }
  .section-content .section-container.menu .data {
    width: 100%;
-   font-family: 'Allura', cursive;
+   font-family: 'londonL', cursive;
    color: #FFF;
    font-size: 32px;
  }
  .section-content .section-container.menu .subtitle {
    width: 100%;
-   font-family: 'Allura', cursive;
+   font-family: 'headline', cursive;
    font-size: 22px;
    margin-bottom: 15px;
  }
