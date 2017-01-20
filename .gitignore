@@ -1,3 +1,4 @@
 vendor/*
+api/config.php
 api/logs/*
 composer.phar
