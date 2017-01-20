@@ -1,4 +1,17 @@
 app.controller('profileCtrl', function ($scope, $rootScope, $routeParams, $location, Data, AUTH_EVENTS) {
+    //set defaults
+    $scope.user = {
+        ticketNum: "Unknown",
+        email : "Unknown",
+        firstName : "Unknown",
+        lastName : "Unknown",
+        year : "Unknown",
+        displayName: "Dr. Evil",
+        food : "None",
+        drinkingAge: "1",
+        allergies: ""
+    }
+
     $scope.$on(AUTH_EVENTS.loginSuccess, function() {
         Data.get('profile/' + $rootScope.id).then(function (results) {
             $scope.user = results.user;

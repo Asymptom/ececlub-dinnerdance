@@ -13,6 +13,7 @@ function getYearOptions(){
         $year_of_grad = substr($year_of_grad, 0, 1).'T'.substr($year_of_grad, 1, 1);
         array_push($result, $year_of_grad);
     }
+    array_push($result, "Other");
     return $result;
 }
 
