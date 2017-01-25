@@ -1,4 +1,6 @@
 app.controller('signupCtrl', function ($scope, $rootScope, $location, Data, AUTH_EVENTS) {
+    $rootScope.page = 'signup';
+    
     //initially set those objects to null to avoid undefined error
     $scope.signup = {
                         ticketNum: '',

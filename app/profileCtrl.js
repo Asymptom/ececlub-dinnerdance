@@ -1,4 +1,5 @@
 app.controller('profileCtrl', function ($scope, $rootScope, $routeParams, $location, Data, AUTH_EVENTS) {
+    $rootScope.page = 'profile';
     //set defaults
     $scope.user = {
         ticketNum: "Unknown",

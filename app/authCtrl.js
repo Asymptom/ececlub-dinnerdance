@@ -1,4 +1,6 @@
 app.controller('authCtrl', function ($scope, $rootScope, $location, Data) {
+    $rootScope.page = 'login';
+
     //initially set those objects to null to avoid undefined error
     $scope.login = {};
     

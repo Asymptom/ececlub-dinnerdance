@@ -44,12 +44,12 @@
             <li><a ng-href="#tickets">Tickets</a></li>
           </ul>
           <ul ng-if="id" class="nav navbar-nav">
-            <li ng-if="isAdmin" class="active"><a ng-href="#signup">Sign Up</a></li>
-            <li><a ng-href="#dashboard">Profile</a></li>
-            <li><a ng-href="#tables">Tables</a></li>
+            <li ng-class="{'active' : page == 'signup'}" ng-if="isAdmin"><a ng-href="#signup">Sign Up</a></li>
+            <li ng-class="{'active' : page == 'profile'}"><a ng-href="#dashboard">Profile</a></li>
+            <li ng-class="{'active' : page == 'tables'}"><a ng-href="#tables">Tables</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li ng-if="!id"><a ng-href="#/login">Login</a></li>
+            <li ng-if="!id" ng-class="{'active' : page == 'login'}"><a ng-href="#/login">Login</a></li>
             <li ng-if="id"><a ng-controller="authCtrl" ng-click="logout();">Logout</a></li>
           </ul>
         </div><!--/.nav-collapse -->
@@ -57,7 +57,7 @@
     </nav>
       <div>
 
-        <div data-ng-view="" id="ng-view" class="slide-animation"></div>
+        <div class="main-content" data-ng-view="" id="ng-view"></div>
 
       </div>
 

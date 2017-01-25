@@ -1,7 +1,8 @@
 app.controller('tableCtrl', function ($scope, $rootScope, $routeParams, $location, Data, AUTH_EVENTS) {
+    $rootScope.page = 'tables';
+
     $scope.$on(AUTH_EVENTS.loginSuccess, function() {
         Data.get('tables').then(function (results) {
-            Data.toast(results);
             $scope.tables = results.tables;
             $scope.tableId = results.tableId;
         });

@@ -66,7 +66,7 @@ app.config(['$routeProvider',
                     $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                 } else {
                     var nextUrl = next.$$route.originalPath;
-                    if (nextUrl != '/' && nextUrl != '/login' && nextUrl.indexOf('/passwordReset') != 0) {
+                    if (nextUrl != '' && nextUrl != '/' && nextUrl != '/login' && nextUrl.indexOf('/passwordReset') != 0) {
                         $location.path("/login");
                     }
                 }
