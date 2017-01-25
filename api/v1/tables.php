@@ -22,7 +22,7 @@ $app->get('/tables', function(Request $request, Response $response) {
         $tableNum = $user['table_num'];
 
         $year = date("Y");
-        $sql = "SELECT tables.id, users.display_name FROM tables LEFT JOIN users ON tables.id = users.table_num AND users.dinnerdance_year=? order by tables.id";
+        $sql = "SELECT tables.id, users.display_name, users.first_name, users.last_name FROM tables LEFT JOIN users ON tables.id = users.table_num AND users.dinnerdance_year=? order by tables.id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(1, $year);
         if ($stmt->execute()){
@@ -39,12 +39,20 @@ $app->get('/tables', function(Request $request, Response $response) {
                         "users" => array()
                     );
                     if (isset($row['display_name'])){
-                        array_push($table['users'], $row['display_name']);    
+                        $user = array(
+                            "displayName" => $row['display_name'],
+                            "name" => $row['first_name'] . ' ' . $row['last_name']
+                        );
+                        array_push($table['users'], $user);    
                     }
                     array_push($tables, $table);
                 } else {
                     $temp = &$tables[key($tables)];
-                    array_push($temp['users'], $row['display_name']);
+                    $user = array(
+                            "displayName" => $row['display_name'],
+                            "name" => $row['first_name'] . ' ' . $row['last_name']
+                        );
+                    array_push($temp['users'], $user);
                 }
             }
 

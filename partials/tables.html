@@ -3,16 +3,17 @@
         <div class="space-6"></div>
         <div class="col-sm-10 col-sm-offset-1">
             <div id="login-box" class="login-box visible widget-box no-border">
-                <div class="widget-body">
-                    <div class="widget-main">
+                <div class="widget-body tables-section">
+                    <div class="widget-main cardholder">
                         <h4 class="header blue lighter bigger">
                             Dinner Dance Tables
                         </h4>
                         <br/>
-                        <div class="container" ng-repeat="table in tables">
-                            <ul>
-                                <li ng-repeat="user in table.users">
-                                    {{user}}
+                        <div class="container card" ng-repeat="table in tables">
+                            <h3>Table {{table.id}}</h3>
+                            <ol>
+                                <li ng-repeat="user in table.users track by $index">
+                                    <span title="{{user.name}}">{{user.displayName}}</span>
                                 </li>
                                 <button class="width-35 btn btn-sm btn-primary" ng-if="tableId!=table.id" ng-click="tableUpdate(table.id)">
                                     Join
@@ -20,7 +21,7 @@
                                 <button class="width-35 btn btn-sm btn-primary" ng-if="tableId==table.id" ng-click="removeFromTables()">
                                     Leave
                                 </button>
-                            </ul>
+                            </ol>
                         </div>
                     </div><!-- /widget-main -->
                 </div><!-- /widget-body -->

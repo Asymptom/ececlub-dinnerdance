@@ -51,7 +51,6 @@ app.config(['$routeProvider',
         .when('/', {
             title: 'Landing',
             templateUrl: 'partials/landing.html',
-            controller: 'authCtrl',
             role: '0'
         })
         .otherwise({
@@ -68,7 +67,6 @@ app.config(['$routeProvider',
                 } else {
                     var nextUrl = next.$$route.originalPath;
                     if (nextUrl != '/' && nextUrl != '/login' && nextUrl.indexOf('/passwordReset') != 0) {
-
                         $location.path("/login");
                     }
                 }
