@@ -198,7 +198,8 @@
     padding: 5px;
     width: 200px;
     font-family: "FaceYourFears";
-    font-size: 25px;
+    font-size:30px;
+    letter-spacing: 1px;
     line-height: 55px;
     padding: 0px;
     display: inline-block;
@@ -220,7 +221,11 @@
     height: 950px;
     text-align: center;
   }
-
+  .section-content.bus {
+    background-color: #11111;
+    background-image: url("../images/darkForest.jpg");
+    height: 600px;
+  }
   .section-content.info {
     background-color: #11111;
     background-image: url("../images/darkwall.jpg");
@@ -228,11 +233,11 @@
   }
   .section-content.ticket {
     background-color: #11111;
-    background-image: url("../images/darkwall.jpg");
+    background-image: url("../images/darkForest.jpg");
     height: 600px;
   }
   .section-content.menu {
-    background-image: url("../images/darkForest.jpg");
+    background-image: url("../images/darkwall.jpg");
     height: auto;
 
     position:relative;
@@ -254,7 +259,11 @@
     height: 100%;
 
   }
-
+  .section-content .section-container.bus {
+    width: 960px;
+    height: 100%;
+    display: inline-block;
+  }
   .section-content .section-container.ticket {
     width: 960px;
     height: 100%;
@@ -296,11 +305,25 @@
     margin-top: 30px;
     text-align: center;
   }
+  .section-content .section-container .content-wrapper.bus{
+    width: 50%;
+    margin-top: 20px;
+    text-align: center;
+    display: inline-block;
+    float: left;
+  }
+  .section-content .section-container .map{
+    width: 50%;
+    margin-top: 30px;
+    text-align: center;
+    display: inline-block;
+    float: right;
+  }
 
   .section-content .section-container .content {
-    width: 80%;
+    width: 100%;
     font-size: 38px;
-    margin-top: 10px;
+    margin-top: 0px;
     text-align: left;
     display: inline-block;
   }
@@ -332,6 +355,26 @@
     font-family: 'londonL', cursive;
     font-size: inherit;
   }
+  /*Busses*/
+  .section-content .section-container.bus .content .title {
+    width: 50%;
+    font-family: 'londonM', cursive;
+    color: #FFFFFF;
+    font-size: inherit;
+    text-align: center;
+    display: inline-block;
+    vertical-align: top;
+  }
+  .section-content .section-container.bus .content .data {
+    width: 50%;
+    line-height: 110%;
+    display: inline-block;
+    color: #FFFFFF;
+    vertical-align: top;
+    text-align: center;
+    font-family: 'londonL', cursive;
+    font-size: inherit;
+  }
  /* Tickets */
   .section-content .section-container.ticket .content .title {
     width: 30%;
@@ -352,9 +395,18 @@
     width: 100%;
     text-align: center;
     display: inline-block;
+    text-decoration-color: black;
     color: #FFFFFF;
     text-decoration: line-through;
-    text-decoration-color: #D80303;
+    font-family: 'londonL', cursive;
+    font-size: inherit;
+  }
+  .section-content .section-container.ticket .content .tickets {
+    width: 100%;
+    text-align: center;
+    display: inline-block;
+    text-decoration-color: black;
+    color: #FFFFFF;
     font-family: 'londonL', cursive;
     font-size: inherit;
   }
@@ -471,4 +523,344 @@
   }
   .price-class{
       float: right;
+  }
+  @media screen and (max-width: 1250px) {
+    /**** dashboard ****/
+    .dashboard {
+      width: 100%;
+    }
+    /** HOME ***/
+    .section-content .section-container span {
+      font-size: 76px;
+    }
+    .section-content .section-container .content {
+      font-size: 34px;
+    }
+    .section-content .section-container.info {
+      height: 61.5%;
+      width: 880px;
+    }
+
+    .section-content .section-container.menu {
+      width: 850px;
+    }
+    /**** long table shrink ****/
+    .custom-table.long {
+      margin-bottom: 0;
+      box-shadow: none;
+    }
+
+    .custom-table.long .custom-table-entry.table-header{
+      display: none;
+    }
+
+    .custom-table.long tbody {
+      display: block;
+
+    }
+    .custom-table.long .custom-table-entry.data {
+      display: block;
+      border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 2px;
+      margin-bottom: 20px;
+      height: auto;
+      padding: 10px;
+    }
+    .custom-table-entry.data .fa{
+      margin-right: 0px;
+      margin-left: 15px;
+    }
+    .custom-table.long .custom-table-entry.data > td {
+      height: 40px;
+      background-color: #ffffff;
+      display: block;
+      vertical-align: middle;
+      text-align: right;
+      word-break: break-all;
+    }
+    .custom-table.long .custom-table-entry.data > td[data-title]:before {
+      content: attr(data-title);
+      float: left;
+      font-size: inherit;
+      font-weight: 400;
+      color: #757575;
+    }
+    /* all input boxes in table */
+    .custom-table-entry.data .information-box {
+      width: 50%;
+      height: 100%;
+    }
+
+    .custom-table-entry.data .information-box input{
+      text-align: right;
+    }
+
+
+  }
+
+  @media screen and (max-width: 884px) {
+    /**** CONTENT ****/
+    .section .content {
+      width: 525px;
+    }
+    /*** HOME ***/
+
+    .home-content .front-title-wrapper {
+      width: 80%;
+    }
+    .home-content .front-title-wrapper .front-title {
+      font-size: 78px;
+    }
+    .section-content .section-container.info {
+      width: 85%;
+      height: 75%;
+    }
+    .section-content .section-container span {
+      font-size: 72px;
+    }
+    .section-content .section-container .content {
+      font-size: 32px;
+    }
+    .section-content .section-container.menu {
+      width: 80%;
+    }
+    .section-content .section-container.menu .title {
+      font-size: 32px;
+    }
+    .section-content .section-container.menu .data {
+      font-size: 30px;
+    }
+    /**PAYMENT ***/
+    .payment .title {
+      font-size: 120px;
+    }
+
+    /*** Admin ****/
+    .dashboard .sidebar{
+      width: 100%;
+      height: 283px;
+      position: absolute;
+    }
+    .dashboard .content-container {
+      margin-left: 0px;
+      margin-top: 283px; /*correspond to navbar width */
+    }
+
+    /**** FORM *****/
+    .information-box{
+      width: 100%;
+    }
+
+    .register-button{
+      float: none;
+    }
+    .register-button-container {
+      width: 100%;
+    }
+    /**** PAYMENT ****/
+    .standard-form .form-title .bolt-wrapper {
+      width: 75px;
+    }
+    .standard-form .form-title .bolt-wrapper img {
+      right: 85px;
+      bottom: 50px;
+    }
+    .standard-form .form-title .bolt-wrapper .number {
+      right: 125px;
+      bottom: 180px;
+    }
+
+    /* Popup */
+    .popup-window {
+      -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+    }
+
+  }
+
+  @media screen and (max-width: 610px) {
+    /**** CONTENT ****/
+    .section .content {
+      width: 85%;
+    }
+    /** Home **/
+    .nav-header {
+      height: 105px;
+    }
+    .home-content .front-title-wrapper {
+      width: 95%;
+    }
+    .home-content .front-title-wrapper .front-title {
+      font-size: 68px;
+    }
+    .home-content .front-title-wrapper .front-msg {
+      font-size: 18px;
+    }
+    .section-content .section-container span {
+      font-size: 68px;
+    }
+    .section-content .section-container .content {
+      font-size: 28px;
+    }
+    .section-content .section-container.ticket{
+      font-size: 62px;
+      width: 98%;
+    }
+    .section-content .section-container.ticket .content .data{
+      font-size: 24px;
+    }
+    .section-content .section-container.ticket .content .title{
+      font-size: 28px;
+    }
+    .section-content .section-container.ticket .content .message{
+      font-size: 24px;
+    }
+    .section-content .section-container.ticket .content .tickets{
+      font-size: 24px;
+    }
+    .dine-table {
+      display: none;
+    }
+    .section-content .section-container.menu {
+      width: 90%;
+    }
+    /**** PAYMENT ****/
+    .payment .title {
+      font-size: 92px;
+    }
+    .payment .error-section .error-msg-wrapper {
+      padding-left: 0px;
+      margin-top: 25px;
+      width: 100%;
+    }
+    .card-info .number {
+      width: 100% !important;
+    }
+
+    .card-info .cvc {
+      width: 100% !important;
+    }
+
+    .card-info .exp_month {
+      width: 100% !important;
+    }
+
+    .card-info .exp_year {
+      width: 100% !important;
+    }
+    /** table selection table **/
+    .user-content .table-row {
+      margin-top: 0px;
+    }
+    .user-content .table {
+      width: 100%;
+      margin-top: 20px;
+    }
+    .standard-form .form-section {
+      padding: 10px;
+    }
+    .standard-form .form-title .bolt-wrapper {
+      width: 67px;
+    }
+    .standard-form .form-title .bolt-wrapper img {
+      right: 72px;
+      bottom: 45px;
+    }
+    .standard-form .form-title .bolt-wrapper .number {
+      right: 108px;
+      bottom: 145px;
+      font-size: 26px;
+    }
+
+  }
+
+  @media screen and (max-width: 474px) {
+    /**** Navbar ****/
+    .nav-header .logo {
+      font-size: 26px;
+      margin-top: 5px;
+    }
+    .home-content .front-title-wrapper {
+      width: 95%;
+    }
+    .home-content .front-title-wrapper .front-title {
+      font-size: 48px;
+    }
+    .home-content .front-title-wrapper .front-msg {
+      font-size: 16px;
+    }
+    .section-content .section-container span {
+      font-size: 62px;
+    }
+    .section-content .section-container .content {
+      font-size: 22px;
+      width: 98%;
+    }
+    .section-content .section-container.menu .title {
+      font-size: 28px;
+    }
+    .section-content .section-container.menu .data {
+      font-size: 24px;
+    }
+    .section-content .section-container.ticket{
+      font-size: 62px;
+      width: 98%;
+    }
+    .section-content .section-container.ticket .content .data{
+      font-size: 24px;
+    }
+    .section-content .section-container.ticket .content .title{
+      font-size: 28px;
+    }
+    .section-content .section-container.ticket .content .message{
+      font-size: 24px;
+    }
+    .section-content .section-container.ticket .content .tickets{
+      font-size: 24px;
+    }
+    /**** Login *****/
+    .login .content {
+      width: 85% !important;
+    }
+    .login .title {
+      font-size: 72px;
+    }
+    .login .message a {
+      display: block;
+    }
+    /**** form ***/
+    .standard-form .display-box .title {
+      font-weight: 700;
+      width: 100%;
+    }
+    .standard-form .display-box .data {
+      text-align: right;
+      width: 100%;
+    }
+    .standard-form .form-title .bolt-wrapper {
+      display:none;
+    }
+    .standard-button {
+      width: 110px;
+    }
+    /**** For word wrap ****/
+    .dashboard .sidebar{
+      height: 317px;
+      position: absolute;
+    }
+    /**** Generic container ****/
+    .dashboard .content-container {
+      margin-left: 0px;
+      margin-top: 317px; /*correspond to navbar width */
+    }
+    .standard-form .form-title {
+      margin-bottom: 35px;
+    }
+    .multilines {
+      -webkit-transform: translate(-8px,-25px);
+      -ms-transform: translate(-8px,-25px);
+      transform: translate(-8px,-25px);
+    }
+
   }
