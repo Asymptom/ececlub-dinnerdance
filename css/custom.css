@@ -2,9 +2,26 @@ body{
     padding-top: 50px;
 }
 
+@font-face {
+  font-family: 'FaceYourFears'; /*a name to be used later*/
+  src: url('../fonts/DK Face Your Fears.ttf') format('truetype'); /*URL to font*/
+  font-weight: normal;
+  font-style: normal;
+}
+
+
 /* ng-cloak */
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng.ng-cloak {
     display: none;
+}
+
+.black_background{
+    background-color: black; 
+    position: relative;
+    overflow: auto;
+    font-family: 'FaceYourFears', Verdana, Geneva, sans-serif;
+    font-size: 400%;
+    color: white;
 }
 
 .breadcrumbs {

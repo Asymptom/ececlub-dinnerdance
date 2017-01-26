@@ -56,7 +56,7 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-      <div>
+      <div class="black_background">
 
         <div class="main-content" data-ng-view="" id="ng-view"></div>
 
