@@ -22,7 +22,31 @@ $app->get('/tables', function(Request $request, Response $response) {
         $tableNum = $user['table_num'];
 
         $year = date("Y");
-        $sql = "SELECT tables.id, users.display_name, users.first_name, users.last_name FROM tables LEFT JOIN users ON tables.id = users.table_num AND users.dinnerdance_year=? order by tables.id";
+        $tables = array();
+        for ($i = 1; $i <= 30; $i++) {
+            
+            $users = array();
+            $sql = "SELECT display_name, first_name, last_name FROM users WHERE table_num =? AND dinnerdance_year=?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(1, $i);
+            $stmt->bindParam(2, $year);
+            if ($stmt->execute()){
+                while($row = $stmt->fetch()) {
+                    $user = array(
+                            "displayName" => $row['display_name'],
+                            "name" => $row['first_name'] . ' ' . $row['last_name']
+                        );    
+                    array_push($users, $user);
+                }
+            }
+            $table = array(
+                    "id" => $i,
+                    "users" => $users
+                );
+            array_push($tables, $table);
+        }
+        /*
+        $sql = "SELECT tables.id, users.display_name, users.first_name, users.last_name FROM tables LEFT JOIN users ON tables.id = users.table_num AND users.dinnerdance_year=? AND tables.id < 31 order by tables.id ";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(1, $year);
         if ($stmt->execute()){
@@ -64,6 +88,11 @@ $app->get('/tables', function(Request $request, Response $response) {
             $json['status'] = "error";
             $json['message'] = 'Failed database query';    
         }
+        */
+        $json["status"] = "success";
+        $json["message"] = "Tables successfully retrieved";
+        $json["tables"] = $tables;
+        $json["tableId"] = $tableNum;
     } else {
         $json['status'] = "error";
         $json['message'] = 'Failed database query';

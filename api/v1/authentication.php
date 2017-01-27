@@ -124,10 +124,7 @@ $app->post('/signUp', function(Request $request, Response $response) {
         $isUserExists = $stmt->fetch();
         if(!$isUserExists){
             $password = passwordUtils::generatePassword();
-
-            $mail = new mailUtils($this);
-            $results = $mail->sendAccountCreationEmail(requestUtils::getAppHome($request), $email, $displayName, $ticketNum, $password);
-            if ($mail->checkEmailResults("Account Creation", $results)){
+            if ($this->mailer->sendAccountCreationEmail(requestUtils::getAppHome($request), $email, $displayName, $ticketNum, $password)){
                 $this->logger->addInfo("Account Creation", array("ticket_num" => $ticketNum , "password" => $password));
                 $password_hash = passwordUtils::hash($password);
                 $sql = "INSERT INTO users (ticket_num, dinnerdance_year, email, first_name, last_name, display_name, password, is_drinking_ticket, is_early_bird) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";

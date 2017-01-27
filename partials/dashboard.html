@@ -50,7 +50,8 @@
                                     <label class="col-sm-5 control-label no-padding-right" for="displayName">Villain Name</label>
                                     <div class="col-sm-7">
                                         <span class="block input-icon input-icon-right">
-                                            <input type="text" class="form-control" placeholder="Villain Name" name="displayName" ng-model="user.displayName" required/>
+                                            <input type="text" class="form-control" placeholder="Villain Name" name="displayName" ng-model="user.displayName" required ng-maxlength="35"/>
+                                            <span ng-show="!profileForm.displayName.$valid" class="help-inline">Your villain name is too long!</span>
                                         </span>
                                     </div>
                                 </div>

@@ -12,7 +12,6 @@
     <link href="css/toaster.css" rel="stylesheet">
     <link href="css/landing.css" rel="stylesheet">
     <link href="css/tables.css" rel="stylesheet">
-    <link href="css/login.css" rel="stylesheet">
     <style>
       a {
       color: orange;
@@ -26,7 +25,7 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body ng-cloak="">
+  <body ng-cloak="" class="black_background">
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -41,6 +40,7 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul ng-if="!id" class="nav navbar-nav">
             <li><a ng-href="#about">Venue</a></li>
+            <li><a ng-href="#bus">Bus Schedule</a></li>
             <li><a ng-href="#menu">Menu</a></li>
             <li><a ng-href="#tickets">Tickets</a></li>
           </ul>

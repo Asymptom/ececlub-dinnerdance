@@ -6,9 +6,13 @@ require '../../vendor/autoload.php';
 require_once 'utils/sessionUtils.php';
 require_once 'utils/passwordUtils.php';
 require_once 'utils/requestUtils.php';
-require_once 'utils/mailUtils.php';
+require_once 'mail/iMailer.php';
+require_once 'mail/SimpleMailer.php';
+require_once 'mail/MandrillMailer.php';
 
 require '../config.php';
+
+error_reporting(E_ALL ^ E_WARNING); //disable warnings that ruin JSON formats
 
 $app = new \Slim\App(["settings" => $config]);
 
@@ -41,6 +45,14 @@ $container['mandrill'] = function ($c) {
     return $client;
 };
 
+$container['mailer'] = function ($c) {
+    $config = $c['settings']['mandrill'];
+    if (isset($config['apiKey']) && !empty($config['apiKey'])){
+        return new MandrillMailer($c, new Mandrill($config['apiKey']));
+    } 
+    return new SimpleMailer($c);
+};
+
 require_once 'authentication.php';
 
 require_once 'profile.php';
@@ -48,6 +60,8 @@ require_once 'profile.php';
 require_once 'password.php';
 
 require_once 'tables.php';
+
+require_once 'upload.php';
 
 $app->run();
 ?>

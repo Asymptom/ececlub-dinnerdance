@@ -32,7 +32,7 @@ $app->get('/password/reset/{resetLink}', function(Request $request, Response $re
         $json["message"] = "This link is invalid. Woo";
         $json["redirect"] = "login";
     } else {
-        $sql = "SELECT id, ticket_num, reset_time FROM users WHERE reset_link=? LIMIT 1";
+        $sql = "SELECT id, ticket_num, email, first_name, reset_time FROM users WHERE reset_link=? LIMIT 1";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(1, $resetLink);
         if ($stmt->execute()){
@@ -44,20 +44,23 @@ $app->get('/password/reset/{resetLink}', function(Request $request, Response $re
                     $password = passwordUtils::generatePassword();
                     $password_hash = passwordUtils::hash($password);
                     $this->logger->addInfo("Account Reset", array("ticket_num" => $user['ticket_num'] , "password" => $password));
-                    //TODO: send mail
-                    $sql = "UPDATE users SET password=? ,reset_link=null, reset_time=null, is_activated=0 where id=? LIMIT 1";
-                    $stmt = $this->db->prepare($sql);
-                    $stmt->bindParam(1, $password_hash);
-                    $stmt->bindParam(2, $user['id']);
-                    if ($stmt->execute()){    
-                        $json["status"] = "success";
-                        $json["message"] = "We have reset your password. Please check your email for the details.";
+                    if ($this->mailer->sendPasswordResetEmail(requestUtils::getAppHome($request), $user['email'], $user['first_name'], $user['ticket_num'], $password)) {
+                        $sql = "UPDATE users SET password=? ,reset_link=null, reset_time=null, is_activated=0 where id=? LIMIT 1";
+                        $stmt = $this->db->prepare($sql);
+                        $stmt->bindParam(1, $password_hash);
+                        $stmt->bindParam(2, $user['id']);
+                        if ($stmt->execute()){    
+                            $json["status"] = "success";
+                            $json["message"] = "We have reset your password. Please check your email for the details.";
+                        } else {
+                            $json["status"] = "error";
+                            $json["message"] = "We could not reset your password at this time";
+                            $json["redirect"] = "login";
+                        }    
                     } else {
                         $json["status"] = "error";
-                        $json["message"] = "We could not reset your password at this time";
-                        $json["redirect"] = "login";
+                        $json["message"] = "Sorry we couldn't send you an email at this time! Please try signing up later.";
                     }
-
                 } else {
                     //destroy the reset_link and reset_time
                     $sql = "UPDATE users SET reset_link=null, reset_time=null where id=? LIMIT 1";
@@ -97,7 +100,7 @@ $app->post('/password/reset', function(Request $request, Response $response) {
 
     $json = array();
 
-    $sql = "SELECT id FROM users WHERE ticket_num=? AND email=? AND dinnerdance_year=? LIMIT 1";
+    $sql = "SELECT id, first_name FROM users WHERE ticket_num=? AND email=? AND dinnerdance_year=? LIMIT 1";
     $stmt = $this->db->prepare($sql);
     $stmt->bindParam(1, $ticketNum);
     $stmt->bindParam(2, $email);
@@ -105,6 +108,7 @@ $app->post('/password/reset', function(Request $request, Response $response) {
     if ($stmt->execute()){
         $user = $stmt->fetch();
         if($user['id']){
+
             $resetLink = passwordUtils::generatePassword(256) . $user['id'];
             $date = new DateTime();
             $date->add(new DateInterval('PT1H'));
@@ -118,9 +122,13 @@ $app->post('/password/reset', function(Request $request, Response $response) {
             $stmt->bindParam(2, $resetTime);
             $stmt->bindParam(3, $user['id']);
             if ($stmt->execute()){
-                //TODO: send mail
-                $json["status"] = "success";
-                $json["message"] = "We have sent you a password reset request. Please check your email. This request will expire in an hour.";
+                if ($this->mailer->sendPasswordResetRequestEmail(requestUtils::getAppHome($request), $email, $user['first_name'], $resetLink)) {
+                    $json["status"] = "success";
+                    $json["message"] = "We have sent you a password reset request. Please check your email. This request will expire in an hour.";
+                } else {
+                    $json["status"] = "error";
+                    $json["message"] = "Sorry we couldn't send you an email at this time! Please try signing up later.";
+                }
             } else {
                 $json["status"] = "error";
                 $json["message"] = "We could not reset your password at this time";

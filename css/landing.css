@@ -104,6 +104,7 @@
     font-weight: 400;
     font-size: 16px;
   }
+
   h1 {
     font-family: Futura, Arial, sans-serif;
   }
@@ -120,6 +121,7 @@
     text-decoration: none;
     color: #eeeeee;
   }
+  
   html, body{
     margin: 0px ;
     background :#F5F5F5;

@@ -9,6 +9,6 @@ $config['db']['user']   = "root";
 $config['db']['pass']   = "";
 $config['db']['dbname'] = "ececlub_dinnerdance";
 
-$config['mandrill']['apiKey'] = "mandrill-api-key";
+$config['mandrill']['apiKey'] = "";
 
 ?>
