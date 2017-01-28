@@ -13,7 +13,7 @@ class MandrillMailer implements iMailer{
     private function checkEmailResults($action, $results){
         $ret = true;
         foreach ($results as $result) {
-            if ($result['status'] == 'rejected'){
+            if ($result['status'] != 'sent'){
                 $ret = false;
             }
             $this->app->logger->addInfo("Email results for $action: ", $result);
@@ -30,13 +30,7 @@ class MandrillMailer implements iMailer{
         $year = date("Y");
         $template_name = 'account-creation';
         $template_content = array(
-            array(
-                'name' => $name,
-                'year' => $year,
-                'ticketNum' => $ticketNum,
-                'password' => $password,
-                'url' => $appHome . "#/login"
-            )
+
         );
         $message = array(
             'to' => array(
@@ -59,7 +53,36 @@ class MandrillMailer implements iMailer{
             'signing_domain' => null,
             'return_path_domain' => null,
             'merge' => true,
-            'merge_language' => 'mailchimp',
+            'merge_language' => 'handlebars',
+            'global_merge_vars' => array(
+                array(
+                    'name' => 'year',
+                    'content' => $year
+                ),
+                array(
+                    'name' => 'login_url',
+                    'content' => $appHome . '#/login'
+                )
+            ),
+            'merge_vars' => array(
+                array(
+                    'rcpt' => $email,
+                    'vars' => array(
+                        array(
+                            'name' => 'first_name',
+                            'content' => $name 
+                        ),
+                        array(
+                            'name' => 'ticket_num',
+                            'content' => $ticketNum 
+                        ),
+                        array(
+                            'name' => 'password',
+                            'content' => $password 
+                        )
+                    )
+                )
+            ),
             'tags' => array($template_name),
         );
         $async = false;
@@ -81,9 +104,9 @@ class MandrillMailer implements iMailer{
         $year = date("Y");
         $template_name = 'password-reset-request';
         $template_content = array(
-            array(
-                'name' => $name,
-                'url' => $appHome . "#/passwordReset/" . $resetLink
+                array(
+                'name' => 'header',
+                'content' => '<h2>Password Reset Request</h2>'
             )
         );
         $message = array(
@@ -107,7 +130,24 @@ class MandrillMailer implements iMailer{
             'signing_domain' => null,
             'return_path_domain' => null,
             'merge' => true,
-            'merge_language' => 'mailchimp',
+            'merge_language' => 'handlebars',
+            'global_merge_vars' => array(
+                array(
+                    'name' => 'reset_url',
+                    'content' => $appHome . "#/passwordReset/" . $resetLink
+                )
+            ),
+            'merge_vars' => array(
+                array(
+                    'rcpt' => $email,
+                    'vars' => array(
+                        array(
+                            'name' => 'first_name',
+                            'content' => $name 
+                        ),
+                    )
+                )
+            ),
             'tags' => array($template_name),
         );
         $async = false;
@@ -130,11 +170,8 @@ class MandrillMailer implements iMailer{
         $template_name = 'password-reset';
         $template_content = array(
             array(
-                'name' => $name,
-                'year' => $year,
-                'ticketNum' => $ticketNum,
-                'password' => $password,
-                'url' => $appHome . "#/login"
+                'name' => 'header',
+                'content' => '<h2>Password Reset</h2>'
             )
         );
 
@@ -159,7 +196,37 @@ class MandrillMailer implements iMailer{
             'signing_domain' => null,
             'return_path_domain' => null,
             'merge' => true,
-            'merge_language' => 'mailchimp',
+            'merge_language' => 'handlebars',
+            'merge_language' => 'handlebars',
+            'global_merge_vars' => array(
+                array(
+                    'name' => 'year',
+                    'content' => $year
+                ),
+                array(
+                    'name' => 'login_url',
+                    'content' => $appHome . '#/login'
+                )
+            ),
+            'merge_vars' => array(
+                array(
+                    'rcpt' => $email,
+                    'vars' => array(
+                        array(
+                            'name' => 'first_name',
+                            'content' => $name 
+                        ),
+                        array(
+                            'name' => 'ticket_num',
+                            'content' => $ticketNum 
+                        ),
+                        array(
+                            'name' => 'password',
+                            'content' => $password 
+                        )
+                    )
+                )
+            ),
             'tags' => array($template_name),
         );
         $async = false;

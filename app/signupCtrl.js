@@ -24,6 +24,12 @@ app.controller('signupCtrl', function ($scope, $rootScope, $location, Data, AUTH
             user: user
         }).then(function (results) {
             Data.toast(results);
+            $scope.signup = {
+                        ticketNum: '',
+                        email:'',
+                        firstName:'',
+                        lastName:''
+                    };
             $location.path(results.redirect);
         });
     };
