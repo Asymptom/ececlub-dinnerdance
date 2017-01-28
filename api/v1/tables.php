@@ -210,7 +210,7 @@ $app->delete('/tables', function(Request $request, Response $response) {
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(1, $id);
         if ($stmt->execute()){
-            $sql = "UPDATE tables SET num_members = num_members - 1 WHERE id=?";
+            $sql = "UPDATE tables SET num_members = num_members - 1 WHERE id=? AND tables.num_members > 0";
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(1, $tableNum);
             
