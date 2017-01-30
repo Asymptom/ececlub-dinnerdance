@@ -13,6 +13,11 @@ class SimpleMailer implements iMailer{
         return false;
     }
 
+    public function sendMassEmail($appHome, $template_name, $recipients, $global_merge_vars){    
+        //TODO:
+        return false;
+    }
+
     public function sendAccountCreationEmail($appHome, $email, $name, $ticketNum, $password){
         $to = $email; // note the comma
         // Subject

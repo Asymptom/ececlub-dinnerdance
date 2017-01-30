@@ -13,7 +13,7 @@ class MandrillMailer implements iMailer{
     private function checkEmailResults($action, $results){
         $ret = true;
         foreach ($results as $result) {
-            if ($result['status'] != 'sent'){
+            if ($result['status'] == 'rejected' || $result['status'] == 'invalid'){
                 $ret = false;
             }
             $this->app->logger->addInfo("Email results for $action: ", $result);
@@ -26,12 +26,46 @@ class MandrillMailer implements iMailer{
         return false;
     }
 
+    public function sendMassEmail($appHome, $template_name, $recipients, $global_merge_vars){
+        $template_content = array();
+        $message = array(
+            'to' => $recipients,
+            'important' => false,
+            'track_opens' => null,
+            'track_clicks' => null,
+            'auto_text' => null,
+            'auto_html' => null,
+            'inline_css' => null,
+            'url_strip_qs' => null,
+            'preserve_recipients' => null,
+            'view_content_link' => null,
+            'tracking_domain' => null,
+            'signing_domain' => null,
+            'return_path_domain' => null,
+            'merge' => true,
+            'merge_language' => 'handlebars',
+            'global_merge_vars' => $global_merge_vars,
+            'tags' => array($template_name),
+        );
+        $async = false;
+        $ip_pool = '';
+        $send_at = '';
+
+        try {
+            $results = $this->mandrill->messages->sendTemplate($template_name, $template_content, $message, $async, $ip_pool, $send_at);
+            $this->app->logger->addInfo("Mandrill Email Results for $template_name", $results);
+            return $this->checkEmailResults($template_name, $results);
+        } catch(Mandrill_Error $e) {
+            // Mandrill errors are thrown as exceptions
+            $this->app->logger->error('A mandrill error occurred: ' . get_class($e) . ' - ' . $e->getMessage());
+            return false; //fail silently
+        }
+    }
+
     public function sendAccountCreationEmail($appHome, $email, $name, $ticketNum, $password){
         $year = date("Y");
         $template_name = 'account-creation';
-        $template_content = array(
-
-        );
+        $template_content = array();
         $message = array(
             'to' => array(
                 array(
