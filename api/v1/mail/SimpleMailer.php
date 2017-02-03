@@ -8,6 +8,11 @@ class SimpleMailer implements iMailer{
         $this->app = $app; 
     }
 
+    public function sendTableAssignmentEmail($appHome, $users){
+        //TODO:
+        return false;
+    }
+
     public function bulkSendAccountCreationEmail($appHome, $emails, $names, $ticketNums, $passwords){
         //TODO: 
         return false;

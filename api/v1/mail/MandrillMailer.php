@@ -21,6 +21,85 @@ class MandrillMailer implements iMailer{
         return $ret;
     }
 
+    public function sendTableAssignmentEmail($appHome, $users){
+        $year = date("Y");
+        $template_name = "table-assignment";
+        $template_content = array();
+        $merge_vars = array();
+        $recipients = array();
+        foreach ($users as $user){
+            array_push($merge_vars,
+                array(
+                'rcpt' => $user['email'],
+                'vars' => array(
+                        array(
+                            'name' => 'first_name',
+                            'content' => $user['first_name'] 
+                        ),
+                        array(
+                            'name' => 'table_num',
+                            'content' => $user['table_num'] 
+                        )
+                    )
+                )
+            );
+
+            array_push(
+                $recipients,
+                array(
+                    'email' => $user['email'],
+                    'name' => $user['first_name'] . " " . $user['last_name'],
+                    'type' => 'to'
+                )
+            );
+        }
+
+        //TODO: replace with private function
+        $message = array(
+            'to' => $recipients,
+            'important' => false,
+            'track_opens' => null,
+            'track_clicks' => null,
+            'auto_text' => null,
+            'auto_html' => null,
+            'inline_css' => null,
+            'url_strip_qs' => null,
+            'preserve_recipients' => null,
+            'view_content_link' => null,
+            'tracking_domain' => null,
+            'signing_domain' => null,
+            'return_path_domain' => null,
+            'merge' => true,
+            'merge_language' => 'handlebars',
+            'global_merge_vars' => array(
+                array(
+                    'name' => 'year',
+                    'content' => $year
+                ),
+                array(
+
+                    'name' => 'table_url',
+                    'content' => $appHome . '#/tables'
+                )
+            ),
+            'merge_vars' => $merge_vars,
+            'tags' => array($template_name),
+        );
+        $async = false;
+        $ip_pool = '';
+        $send_at = '';
+
+        try {
+            $results = $this->mandrill->messages->sendTemplate($template_name, $template_content, $message, $async, $ip_pool, $send_at);
+            $this->app->logger->addInfo("Mandrill Email Results for $template_name", $results);
+            return $this->checkEmailResults($template_name, $results);
+        } catch(Mandrill_Error $e) {
+            // Mandrill errors are thrown as exceptions
+            $this->app->logger->error('A mandrill error occurred: ' . get_class($e) . ' - ' . $e->getMessage());
+            return false; //fail silently
+        }
+    }
+
     public function bulkSendAccountCreationEmail($appHome, $emails, $names, $ticketNums, $passwords){
         //TODO
         return false;
