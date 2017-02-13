@@ -121,7 +121,7 @@
     text-decoration: none;
     color: #eeeeee;
   }
-  
+
   html, body{
     margin: 0px ;
     background :#F5F5F5;
@@ -721,6 +721,26 @@
     .section-content .section-container.ticket .content .tickets{
       font-size: 24px;
     }
+    .section-content .section-container .map{
+      display: none;
+    }
+    .section-content .section-container.bus{
+      font-size: 62px;
+      width: 98%;
+    }
+    .section-content .section-container.bus .content .data{
+      font-size: 24px;
+    }
+    .section-content .section-container.bus .content .title{
+      font-size: 20px;
+    }
+    .section-content .section-container.bus .content .message{
+      font-size: 24px;
+    }
+    .section-content .section-container.bus .content .tickets{
+      font-size: 24px;
+    }
+
     .dine-table {
       display: none;
     }
@@ -783,6 +803,9 @@
       font-size: 26px;
       margin-top: 5px;
     }
+    h2{
+      font-size: 42px;
+    }
     .home-content .front-title-wrapper {
       width: 95%;
     }
@@ -819,6 +842,30 @@
       font-size: 24px;
     }
     .section-content .section-container.ticket .content .tickets{
+      font-size: 24px;
+    }
+    .section-content .section-container .map{
+      display: none;
+    }
+    .section-content .section-container .content-wrapper.bus{
+      display: block;
+      width: 95%;
+    }
+    .section-content .section-container.bus{
+      font-size: 62px;
+      width: auto;
+      height: 150%;
+    }
+    .section-content .section-container.bus .content .data{
+      font-size: 24px;
+    }
+    .section-content .section-container.bus .content .title{
+      font-size: 20px;
+    }
+    .section-content .section-container.bus .content .message{
+      font-size: 24px;
+    }
+    .section-content .section-container.bus .content .tickets{
       font-size: 24px;
     }
     /**** Login *****/
