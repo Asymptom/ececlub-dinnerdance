@@ -40,7 +40,7 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul ng-if="!id" class="nav navbar-nav">
             <li><a ng-href="#about">Venue</a></li>
-            <li><a ng-href="#bus">Bus Schedule</a></li>
+            <li><a ng-href="#buses">Bus Schedule</a></li>
             <li><a ng-href="#menu">Menu</a></li>
             <li><a ng-href="#tickets">Tickets</a></li>
           </ul>
